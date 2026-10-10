@@ -16,6 +16,21 @@ body:not(.reading){padding-bottom:var(--footer)}body:not(.reading) .footer{posit
 
 .arch-hint{font-size:11px;line-height:1.6;color:var(--muted);margin:0 0 10px}@media print{.interaction-hint{display:none!important}}
 
+/* Chapter pages stay visible so chapter jumps do not conceal sibling pages. */
+:root{--chapter-nav:68px}.chapters button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;line-height:1.45}.chapters .chapter-count{font-size:10px;font-weight:400;color:var(--muted);white-space:nowrap}.chapters button[aria-current=true] .chapter-count{color:var(--blue)}
+.chapter-navigation{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:20px;min-height:var(--chapter-nav);padding:10px 3.4vw;background:#fff;border-bottom:1px solid var(--line)}
+.chapter-progress{font-size:12px;color:var(--muted);line-height:1.5;white-space:nowrap}
+.chapter-pages{display:grid;grid-template-columns:repeat(var(--chapter-pages,2),minmax(0,1fr));gap:8px;min-width:0;max-width:920px}
+.chapter-page{border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--muted);font-size:12px;line-height:1.5;text-align:left;padding:9px 12px;min-width:0;overflow-wrap:anywhere}
+.chapter-page:hover{color:var(--blue);border-color:#aebdf4}.chapter-page[aria-current=page]{background:var(--pale);border-color:#9fb0f4;color:var(--blue);font-weight:650}
+.slide{min-height:calc(100dvh - var(--nav) - var(--chapter-nav) - var(--footer))}
+.footer{justify-content:space-between;gap:18px}.page-position{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}.foot-label{min-width:0}.counter{text-align:left;font-size:11px;color:var(--muted)}.pager{gap:12px;min-width:0}
+.pager>button{width:auto;min-height:46px;height:auto;padding:8px 12px;gap:8px}.pager>#next{width:235px;max-width:42vw;justify-content:space-between;background:var(--blue);border-color:var(--blue);color:#fff;text-align:left}
+.next-copy{min-width:0;display:flex;flex-direction:column;gap:2px}.next-copy small{font-size:10px;line-height:1.4;font-weight:400;opacity:.85}.next-copy strong{font-size:13px;line-height:1.5;overflow-wrap:anywhere}.pager>button:disabled{opacity:.4}
+@media(max-width:1000px){.chapter-navigation{padding:10px 20px;gap:12px}.chapter-page{padding:8px;font-size:11px}}
+@media(max-width:700px){:root{--nav:134px;--chapter-nav:100px}.chapters button{align-items:center;min-width:0;text-align:center}.chapter-navigation{grid-template-columns:1fr;padding:10px 16px;gap:8px}.chapter-progress{font-size:11px}.chapter-pages{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.chapter-page{padding:8px 10px}.footer{flex-wrap:nowrap;padding:10px 16px;gap:10px}.foot-label{display:block;font-size:10px;line-height:1.5}.counter{font-size:10px;min-width:0}.pager{gap:7px}.pager>#previous{width:36px;padding:6px}.pager>#previous>span{display:none}.pager>#next{width:182px;max-width:48vw;padding:8px 10px}.next-copy strong{font-size:11px}}
+@media print{.chapter-navigation{display:none!important}.slide,.slide[hidden]{min-height:auto!important}}
+
 .taxonomy-title{display:flex;align-items:center;justify-content:space-between;gap:16px}.taxonomy-title>.quiet{flex-shrink:0}
 .eco-layout{display:grid;grid-template-columns:minmax(0,1.95fr) minmax(285px,1fr);gap:24px;align-items:stretch}.eco-figure{min-width:0;display:flex;flex-direction:column;justify-content:center}.eco-stage{position:relative;isolation:isolate;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-areas:"platform platform platform product product product" ". control control control control ." "model model knowledge knowledge tools tools" "runtime runtime runtime governance governance governance";gap:32px 16px;padding:25px 26px 0}.eco-links{position:absolute;inset:0;width:100%;height:100%;z-index:-1;overflow:visible;pointer-events:none}.eco-links text{font-size:11px}.eco-node{min-width:0;text-align:left;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);padding:12px;min-height:77px}.eco-node>strong{font-size:14px;line-height:1.45}.eco-node>span{font-size:11px;line-height:1.6;color:var(--muted)}.eco-node[aria-pressed=true]{background:var(--pale);border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}.eco-node[aria-pressed=true]>strong{color:var(--blue)}
 .eco-node[data-eco-node=platform]{grid-area:platform}.eco-node[data-eco-node=product]{grid-area:product}.eco-node[data-eco-node=control]{grid-area:control}.eco-node[data-eco-node=model]{grid-area:model}.eco-node[data-eco-node=knowledge]{grid-area:knowledge}.eco-node[data-eco-node=tools]{grid-area:tools}.eco-node[data-eco-node=runtime]{grid-area:runtime}.eco-node[data-eco-node=governance]{grid-area:governance}
@@ -28,9 +43,35 @@ body:not(.reading){padding-bottom:var(--footer)}body:not(.reading) .footer{posit
 @media(max-width:650px){.eco-stage{grid-template-columns:1fr;grid-template-areas:"platform" "product" "control" "model" "knowledge" "tools" "runtime" "governance";padding:0 26px;gap:35px}.eco-node{min-height:82px;padding:13px}.eco-node>strong{font-size:15px}.eco-node>span{font-size:12px}}
 @media print{.eco-layout{grid-template-columns:1fr 1fr;gap:12px}.eco-stage{grid-template-columns:repeat(6,minmax(0,1fr));grid-template-areas:"platform platform platform product product product" ". control control control control ." "model model knowledge knowledge tools tools" "runtime runtime runtime governance governance governance";gap:25px 10px}.eco-node{min-height:70px;padding:8px}.eco-node>strong{font-size:10px}.eco-node>span,.eco-links text{font-size:9px}.eco-detail-actions,.taxonomy-title>.quiet,.route-scope>.button{display:none}.framework-routes{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.route-card{padding:12px}.route-card>h3{font-size:12px}.route-project-name,.route-card-host .route-project-name{font-size:12px}}
 
-.study-switch{position:relative;flex-shrink:0;font-family:inherit;color:#172b45;line-height:1.5}.study-switch>summary{list-style:none;display:flex;align-items:center;gap:7px;cursor:pointer;padding:8px 10px;border:1px solid #d4dfed;background:#f8faff;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap;width:auto;color:#294f83}.study-switch>summary::-webkit-details-marker{display:none}.study-switch>summary svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6}.study-switch>summary i{font-style:normal;color:#7b8ba3;font-size:14px}.study-switch[open]>summary{background:#eaf1ff;border-color:#8dadde}.study-switch>nav{position:absolute;right:0;top:calc(100% + 10px);z-index:100;width:282px;max-width:calc(100vw - 24px);padding:7px;background:#fff;border:1px solid #d6e1ee;border-radius:12px;box-shadow:0 15px 45px #162f5129;text-align:left;white-space:normal}.study-switch>nav a{display:block;position:relative;text-decoration:none;color:#203753;border-radius:7px;padding:12px 45px 12px 13px}.study-switch>nav a:hover,.study-switch>nav a:focus-visible{background:#f0f5fd}.study-switch>nav a[aria-current=page]{background:#eaf1ff;color:#275dd9}.study-switch b{display:block;font-size:13px;line-height:1.5;font-weight:650}.study-switch small{display:block!important;font-size:11px!important;line-height:1.6!important;color:#6d7f96!important;font-weight:400!important;letter-spacing:0!important;margin-top:3px!important}.study-switch em{position:absolute;right:12px;top:15px;font-style:normal;font-size:10px;color:#4770a9}.study-switch>summary:focus-visible{outline:3px solid #4885ff;outline-offset:3px}.topbar:has(.study-switch){z-index:40;position:relative}body .topbar:has(.progress){position:fixed}.top-actions .study-switch{margin-right:2px}.actions .study-switch{margin-right:5px}@media(max-width:760px){.study-switch>summary{padding:8px;gap:0}.study-switch>summary span,.study-switch>summary i{display:none}.study-switch>nav{position:fixed;top:60px;right:12px;width:282px;max-height:calc(100dvh - 80px);overflow:auto}.top-actions .study-switch{margin-right:0}.actions .study-switch{margin-right:2px}}@media print{.study-switch{display:none!important}}
+.dsh-proof{container-type:inline-size;container-name:dsh-proof;--proof-accent:var(--blue,#294fed);--proof-line:#dce4f0;--proof-muted:#596a81;color:var(--ink,#17263e);font-size:14px;line-height:1.65;min-width:0}
+.dsh-proof figure{margin:0}.dsh-proof-head,.dsh-proof-row{display:grid;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr) 24px minmax(0,1.15fr);align-items:stretch;gap:0}
+.dsh-proof-head{font-size:11px;font-weight:700;color:var(--proof-muted);letter-spacing:.06em;margin-bottom:8px}.dsh-proof-head>span{padding-left:15px}
+.dsh-proof-rows{list-style:none!important;padding:0!important;margin:0!important;display:grid;gap:10px}
+.dsh-proof-row{margin:0!important;border:1px solid var(--proof-line);border-radius:12px;overflow:hidden;background:#fff;break-inside:avoid}
+.dsh-proof-cell{padding:13px 15px;min-width:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px}
+.dsh-proof-cell strong{font-size:15px;line-height:1.5;overflow-wrap:anywhere}.dsh-proof-cell small{font-size:12px;line-height:1.6;color:var(--proof-muted);overflow-wrap:anywhere}
+.dsh-proof-number,.dsh-proof-kind{font-size:10px;font-weight:700;line-height:1.4;color:var(--proof-accent);letter-spacing:.05em}.dsh-proof-number{font-family:Consolas,monospace}
+.dsh-proof-mechanism{background:#edf2ff}.dsh-proof-mechanism strong{color:var(--proof-accent)}.dsh-proof-check{background:#f3f8f7}
+.dsh-proof-arrow{display:flex;align-items:center;justify-content:center;font-size:20px;color:#7891b6;background:#fff}
+.dsh-proof figcaption{font-size:11px;color:var(--proof-muted);line-height:1.6;margin-top:8px}
+.dsh-proof-boundary{font-size:12px!important;line-height:1.7!important;color:var(--proof-muted);padding:10px 12px;border-left:3px solid #bfd0ea;background:#f4f7fb;margin:12px 0!important}.dsh-proof-boundary strong{color:var(--ink,#17263e)}
+.dsh-proof-protocol{font-size:13px!important;margin-top:10px}.dsh-proof-protocol>summary{color:var(--proof-accent);font-weight:600;width:auto}.dsh-proof-protocol-body{padding-top:12px!important;max-width:none!important}.dsh-proof-protocol-body>p{font-size:13px;line-height:1.8;margin:0 0 12px}
+.dsh-proof-sequence{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:12px 0 16px;font-size:12px}.dsh-proof-sequence>span{padding:6px 9px;border-radius:6px;background:#edf2ff;color:var(--proof-accent)}.dsh-proof-sequence i{font-style:normal;color:#7891b6}
+.dsh-proof-table-wrap{overflow-x:auto;max-width:100%;border:1px solid var(--proof-line);border-radius:8px;margin:12px 0}
+.dsh-proof-table{width:100%;min-width:560px;border-collapse:collapse;font-size:12px;line-height:1.75;text-align:left}.dsh-proof-table caption{text-align:left;padding:10px 12px;font-weight:600;background:#f4f7fb;color:var(--ink,#17263e)}.dsh-proof-table th,.dsh-proof-table td{padding:10px 12px;border-bottom:1px solid var(--proof-line);vertical-align:top}.dsh-proof-table thead th{background:#f4f7fb;font-size:12px}.dsh-proof-table tbody th{width:15%;white-space:nowrap}.dsh-proof-table tr:last-child>*{border-bottom:0}
+.dsh-proof-gates{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.dsh-proof-gates p{padding:12px;background:#f4f7fb;font-size:12px;line-height:1.8;margin:0}.dsh-proof-gates b{display:block;margin-bottom:4px;color:var(--ink,#17263e)}.dsh-proof-adoption{padding-top:10px;border-top:1px solid var(--proof-line)}.dsh-proof-sources{font-size:11px!important;color:var(--proof-muted)}
+.dsh-proof-wrapper{margin-top:18px}.dsh-proof-wrapper>summary{font-weight:600}.dsh-proof-wrapper>.details-body{padding-top:16px}.dsh-proof-wrapper .dsh-proof-protocol{margin:10px 0}
+@media(max-width:760px){.dsh-proof-head{display:none}.dsh-proof-row{grid-template-columns:1fr}.dsh-proof-arrow{height:22px;transform:rotate(90deg);font-size:18px}.dsh-proof-cell{padding:12px 15px}.dsh-proof-cell strong{font-size:15px}.dsh-proof-gates{grid-template-columns:1fr}.dsh-proof-table{min-width:530px}}
+@container dsh-proof (max-width:600px){.dsh-proof-head{display:none}.dsh-proof-row{grid-template-columns:1fr}.dsh-proof-arrow{height:22px;transform:rotate(90deg);font-size:18px}.dsh-proof-cell{padding:12px 15px}.dsh-proof-gates{grid-template-columns:1fr}}
+@media print{.dsh-proof-head,.dsh-proof-row{grid-template-columns:minmax(0,1fr) 16px minmax(0,1fr) 16px minmax(0,1.15fr)}.dsh-proof-head{display:grid}.dsh-proof-cell{padding:8px}.dsh-proof-cell strong{font-size:10pt}.dsh-proof-cell small{font-size:8pt}.dsh-proof-arrow{height:auto;transform:none;font-size:13pt}.dsh-proof-wrapper,.dsh-proof-protocol{display:block!important}.dsh-proof-wrapper>summary,.dsh-proof-protocol>summary{display:none!important}.dsh-proof-wrapper>.details-body,.dsh-proof-protocol-body{display:block!important}.dsh-proof-table-wrap{overflow:visible;border:0}.dsh-proof-table{min-width:0;font-size:8pt}.dsh-proof-boundary{font-size:8pt!important}.dsh-proof-row,.dsh-proof-gates{break-inside:avoid}.dsh-proof-protocol-body{break-before:auto}.dsh-proof-rows{gap:7px}}
+
+.study-switch{position:relative;flex-shrink:0;align-self:center;margin:0;padding:0;border:0;border-radius:0;background:transparent;font-family:inherit;color:#172b45;line-height:1.5}.study-switch>summary{list-style:none;display:flex;align-items:center;gap:7px;cursor:pointer;padding:8px 10px;border:1px solid #d4dfed;background:#f8faff;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap;width:auto;color:#294f83}.study-switch>summary::-webkit-details-marker{display:none}.study-switch>summary svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6}.study-switch>summary i{font-style:normal;color:#7b8ba3;font-size:14px}.study-switch[open]>summary{background:#eaf1ff;border-color:#8dadde}.study-switch>nav{position:absolute;right:0;top:calc(100% + 10px);z-index:100;width:282px;max-width:calc(100vw - 24px);padding:7px;background:#fff;border:1px solid #d6e1ee;border-radius:12px;box-shadow:0 15px 45px #162f5129;text-align:left;white-space:normal}.study-switch>nav a{display:block;position:relative;text-decoration:none;color:#203753;border-radius:7px;padding:12px 45px 12px 13px}.study-switch>nav a:hover,.study-switch>nav a:focus-visible{background:#f0f5fd}.study-switch>nav a[aria-current=page]{background:#eaf1ff;color:#275dd9}.study-switch b{display:block;font-size:13px;line-height:1.5;font-weight:650}.study-switch small{display:block!important;font-size:11px!important;line-height:1.6!important;color:#6d7f96!important;font-weight:400!important;letter-spacing:0!important;margin-top:3px!important}.study-switch em{position:absolute;right:12px;top:15px;font-style:normal;font-size:10px;color:#4770a9}.study-switch>summary:focus-visible{outline:3px solid #4885ff;outline-offset:3px}.topbar:has(.study-switch){z-index:40;position:relative}body .topbar:has(.progress){position:fixed}.top-actions .study-switch{margin-right:2px}.actions .study-switch{margin-right:5px}@media(max-width:760px){.study-switch>summary{padding:8px;gap:0}.study-switch>summary span,.study-switch>summary i{display:none}.study-switch>nav{position:fixed;top:60px;right:12px;width:282px;max-height:calc(100dvh - 80px);overflow:auto}.top-actions .study-switch{margin-right:0}.actions .study-switch{margin-right:2px}}@media print{.study-switch{display:none!important}}
 
 .study-switch>summary::before,.study-switch>summary::after{content:none!important}.actions .quiet{white-space:nowrap}@media(max-width:1100px){.study-switch>summary{padding:8px;gap:0}.study-switch>summary span,.study-switch>summary i{display:none}}
+
+/* Match the Agent page toolbar controls without inheriting article details spacing. */
+.top-actions .study-switch>summary{min-height:41px;justify-content:center;font-size:.875rem;line-height:1.6}.top-actions .study-switch>summary svg{width:23px;height:23px}
+@media(max-width:760px){.top-actions .study-switch>summary{min-height:39px;padding:7px 9px;font-size:.8rem}}
 </style></head><body><a class="skip" href="#main">跳到正文</a>
 <svg class="symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
 <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
@@ -46,7 +87,8 @@ body:not(.reading){padding-bottom:var(--footer)}body:not(.reading) .footer{posit
 <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
 <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8zm-10 9 10 5 10-5M2 16l10 5 10-5"/></symbol>
 </defs></svg>
-<header class="topbar"><div class="brand"><span class="brandmark"><svg class="icon"><use href="#i-grid"/></svg></span><div><strong>DSH 架构解析</strong><small>从论文到行业选型</small></div></div><nav class="chapters" aria-label="研究章节"><button data-chapter="paper" aria-current="true">01 设计论文</button><button data-chapter="architecture">02 架构能力</button><button data-chapter="comparison">03 生态定位与框架对比</button></nav><div class="actions"><details class="study-switch"><summary aria-label="切换研究" title="切换研究"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>切换研究</span><i aria-hidden="true">⌄</i></summary><nav aria-label="两份研究导航"><a href="index.html" aria-label="研究导航：选择研究主题"><b>研究导航</b><small>选择研究主题</small></a><a href="agent-research.html#overview" aria-label="Agent 架构研究：技术全景与行业选型"><b>Agent 架构研究</b><small>技术全景与行业选型</small></a><a href="dsh-meeting.html#paper" aria-label="DSH 架构解析：设计理念与架构能力" aria-current="page"><b>DSH 架构解析</b><small>设计理念与架构能力</small><em>当前</em></a></nav></details><button class="quiet" id="reading" aria-pressed="false">阅读模式</button><button class="quiet" id="sources-open">资料依据 ↗</button></div></header>
+<header class="topbar"><div class="brand"><span class="brandmark"><svg class="icon"><use href="#i-grid"/></svg></span><div><strong>DSH 架构解析</strong><small>从论文到行业选型</small></div></div><nav class="chapters" aria-label="研究章节"><button data-chapter="paper" aria-current="true"><span class="chapter-name">01 设计论文</span><small class="chapter-count">共 2 页</small></button><button data-chapter="architecture"><span class="chapter-name">02 架构能力</span><small class="chapter-count">共 2 页</small></button><button data-chapter="comparison"><span class="chapter-name">03 生态定位与框架对比</span><small class="chapter-count">共 4 页</small></button></nav><div class="actions"><details class="study-switch"><summary aria-label="切换研究" title="切换研究"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>切换研究</span><i aria-hidden="true">⌄</i></summary><nav aria-label="两份研究导航"><a href="index.html" aria-label="研究导航：选择研究主题"><b>研究导航</b><small>选择研究主题</small></a><a href="agent-research.html#overview" aria-label="Agent 架构研究：技术全景与行业选型"><b>Agent 架构研究</b><small>技术全景与行业选型</small></a><a href="dsh-meeting.html#paper" aria-label="DSH 架构解析：设计理念与架构能力" aria-current="page"><b>DSH 架构解析</b><small>设计理念与架构能力</small><em>当前</em></a></nav></details><button class="quiet" id="reading" aria-pressed="false">阅读模式</button><button class="quiet" id="sources-open">资料依据 ↗</button></div></header>
+<div class="chapter-navigation"><p class="chapter-progress" id="chapter-progress" aria-live="polite">设计论文 · 第 1 / 2 页</p><nav class="chapter-pages" id="chapter-pages" aria-label="设计论文的页面"></nav></div>
 <main id="main">
 <section class="slide" id="paper" data-chapter="paper" data-title="设计出发点" aria-labelledby="title-paper">
 <p class="eyebrow"><span class="num">01</span> 设计论文 / 从一个架构问题开始</p>
@@ -118,12 +160,51 @@ body:not(.reading){padding-bottom:var(--footer)}body:not(.reading) .footer{posit
 <div class="takeaway"><svg class="icon"><use href="#i-arrow"/></svg><div>DSH 值得验证的优势：统一组件体系对行业定制的适配性。<small>“精简”“产品完整”“系统组合”是观察重点，不是互斥能力，也不是性能排名。</small></div><button class="quiet sources-trigger">官方依据 ↗</button></div>
 </section>
 <section class="slide" id="decision" data-chapter="comparison" data-title="行业选型判断" hidden aria-labelledby="title-decision">
-<p class="eyebrow"><span class="num">08</span> 研究判断 / 给推荐一个可验证的理由</p><h2 id="title-decision">推荐 DSH，<br>验证它能否承接<em>长期变化</em>。</h2><p class="lede">当目标是多个行业、多个企业共用执行底座时，优先验证 DSH 的组件组合价值。</p>
-<div class="decision-grid"><div class="decision-main"><span class="label">我们要维护的变化</span><div class="change-row"><svg class="icon"><use href="#i-model"/></svg><strong>模型与执行环境</strong><span>部署条件、模型服务变化</span></div><div class="change-row"><svg class="icon"><use href="#i-tool"/></svg><strong>数据与业务工具</strong><span>接口、指标、企业适配变化</span></div><div class="change-row"><svg class="icon"><use href="#i-nodes"/></svg><strong>行业能力组合</strong><span>插件依赖、版本与能力集合变化</span></div></div><aside class="validation"><span class="label">用同一组业务任务验证</span><h3>比较真实改造成本</h3><p>接入一个查询工具 → 替换服务实现 → 切换企业配置 → 卸载扩展并检查资源。</p><p>再核验权限、失败恢复、升级兼容与维护工作量。</p><span class="detail-tag">DSH / OpenCode / Pi 同题验证</span></aside></div>
-<div class="takeaway"><svg class="icon"><use href="#i-check"/></svg><div>推荐依据：统一组件架构与行业复用需求相匹配。<small>这是待验证的选型判断；DSH 官方仍为开发者预览，本研究未完成框架性能或业务集成实测。</small></div><a class="source-link" href="https://github.com/deepseek-ai/deepseek-harness" target="_blank" rel="noopener noreferrer">项目状态 [2] ↗</a></div>
+<p class="eyebrow"><span class="num">08</span> 研究判断 / 业务变化、组合机制与验证</p><h2 id="title-decision">用三类变化，验证 <em>DSH</em>。</h2><p class="lede">当业务确需长期维护不同组件组合时，优先验证 DSH 的组合机制；现有业务实现是比较基线。</p>
+<div class="dsh-proof">
+  <figure class="dsh-proof-figure" aria-label="三类业务变化与 DSH 组合机制、验证依据的对应关系">
+    <div class="dsh-proof-head" aria-hidden="true"><span>业务变化</span><span></span><span>DSH 组合机制</span><span></span><span>同题验证</span></div>
+    <ol class="dsh-proof-rows">
+      <li class="dsh-proof-row">
+        <div class="dsh-proof-cell dsh-proof-change"><span class="dsh-proof-number">01</span><strong>替换查询服务</strong><small>数据接口或服务实现变化</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-mechanism"><span class="dsh-proof-kind">机制</span><strong>能力接口＋服务依赖</strong><small>在接口边界替换提供方</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-check"><span class="dsh-proof-kind">验证</span><strong>改动范围与切换正确性</strong><small>记录受影响组件，核对结果、授权与在途请求</small></div>
+      </li>
+      <li class="dsh-proof-row">
+        <div class="dsh-proof-cell dsh-proof-change"><span class="dsh-proof-number">02</span><strong>切换企业能力组合</strong><small>工具、技能与配置不同</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-mechanism"><span class="dsh-proof-kind">机制</span><strong>组合配置（Profile）</strong><small>装配插件包与覆盖配置</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-check"><span class="dsh-proof-kind">验证</span><strong>重复代码与权限一致性</strong><small>检查允许能力、版本追溯和企业边界</small></div>
+      </li>
+      <li class="dsh-proof-row">
+        <div class="dsh-proof-cell dsh-proof-change"><span class="dsh-proof-number">03</span><strong>更新或撤出插件</strong><small>组件、注册与依赖变化</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-mechanism"><span class="dsh-proof-kind">机制</span><strong>依赖协调＋注册清理</strong><small>管理组件拥有的注册与资源</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-check"><span class="dsh-proof-kind">验证</span><strong>资源释放与依赖状态</strong><small>检查插件占用、监听器、连接及在途任务</small></div>
+      </li>
+    </ol>
+    <figcaption>每行对应一项待检验的维护收益；这些机制与其他方案的能力可以重叠。</figcaption>
+  </figure>
+  <p class="dsh-proof-boundary"><strong>机制边界：</strong>Profile 负责装配，企业隔离、业务授权和版本绑定由产品与部署实现；服务替换需验证兼容与切换策略；资源清理不撤销已发生的业务写入。</p>
+  <details class="dsh-proof-protocol">
+    <summary>同题比较：基线、替代方案与验收</summary>
+    <div class="dsh-proof-protocol-body">
+      <p><strong>比较基线：</strong>现有 Java／业务实现。DSH、OpenCode V2、Pi 执行与嵌入部分固定版本，使用相同业务服务、数据、身份、模型、工具范围与任务预算。基线缺少的能力记录补齐工作量；固定查询与开放调查分别比较。</p>
+      <div class="dsh-proof-sequence" aria-label="统一原型验证任务"><span>接入查询工具</span><i aria-hidden="true">→</i><span>替换服务实现</span><i aria-hidden="true">→</i><span>切换企业配置</span><i aria-hidden="true">→</i><span>撤出插件查资源</span></div>
+      <div class="dsh-proof-table-wrap"><table class="dsh-proof-table"><caption>三类变化的替代实现与记录项</caption><thead><tr><th scope="col">变化</th><th scope="col">可比较的替代实现</th><th scope="col">重点记录</th></tr></thead><tbody>
+        <tr><th scope="row">服务替换</th><td>现有业务适配接口；OpenCode／Pi 的工具与扩展接口</td><td>改动位置与实际工时、受影响组件、契约兼容、在途请求处理</td></tr>
+        <tr><th scope="row">能力组合</th><td>应用配置与装配；OpenCode 插件配置；Pi 扩展装配</td><td>重复代码、配置差异、工具与技能范围、业务版本追溯、授权与企业隔离</td></tr>
+        <tr><th scope="row">插件撤出</th><td>应用显式清理；OpenCode V2 插件生命周期；Pi 扩展或 Chord 生命周期机制</td><td>插件拥有的注册与资源是否释放、依赖消失与恢复状态、在途任务处置、升级回归工作量</td></tr>
+      </tbody></table></div>
+      <div class="dsh-proof-gates"><p><b>基础门槛</b>结果与证据正确，业务授权有效，失败处理和版本追溯符合要求。</p><p><b>组合价值</b>比较改造工时、受影响组件、重复代码与升级维护量；检查插件占用释放，不要求共享资源总量归零。</p></div>
+      <p class="dsh-proof-adoption">基础门槛通过、组合维护收益覆盖适配成本后，才确定采用范围。若只是内容配置，现有实现已足够，可继续保留；本研究尚未执行这些对比任务。</p>
+      <p class="dsh-proof-sources">机制依据：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md" target="_blank" rel="noopener noreferrer">DSH 架构</a> · <a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md" target="_blank" rel="noopener noreferrer">Cordis 依赖与清理机制</a>。替代方案依据见生态项目归属与同类对比资料。</p>
+    </div>
+  </details>
+</div>
+
+<div class="takeaway"><svg class="icon"><use href="#i-check"/></svg><div>推荐依据：组合机制与需要维护的变化相匹配。<small>这是待验证的选型假设；DSH 官方仍为开发者预览，本研究未完成框架性能或业务集成实测。</small></div><a class="source-link" href="https://github.com/deepseek-ai/deepseek-harness" target="_blank" rel="noopener noreferrer">项目状态 [2] ↗</a></div>
 </section>
 </main>
-<footer class="footer"><span class="foot-label" id="foot-label">设计出发点 · ← → 翻页</span><nav class="dots" aria-label="逐页导航"></nav><div class="pager"><button id="previous" aria-label="上一页"><svg class="icon"><use href="#i-left"/></svg></button><span class="counter" id="counter" aria-live="polite">01 / 08</span><button id="next" aria-label="下一页"><svg class="icon"><use href="#i-right"/></svg></button></div></footer>
+<footer class="footer"><div class="page-position"><span class="foot-label" id="foot-label">设计出发点</span><span class="counter" id="counter">全篇 01 / 08</span></div><div class="pager"><button id="previous" aria-label="上一页"><svg class="icon" aria-hidden="true"><use href="#i-left"/></svg><span>上一页</span></button><button id="next" aria-label="本章下一页：时空可组合"><span class="next-copy"><small id="next-kind">本章下一页</small><strong id="next-title">时空可组合</strong></span><svg class="icon" aria-hidden="true"><use href="#i-right"/></svg></button></div></footer>
 <dialog id="sources" aria-labelledby="sources-title"><div class="dialog-head"><h2 id="sources-title">资料依据与研究边界</h2><button class="quiet" id="sources-close" aria-label="关闭资料依据">关闭 ×</button></div><p class="footnote">论文与核心资料核对：2026-10-09；分类资料核对：2026-10-10。论文机制、官方实现与行业选型判断分别表述；示意交互不运行真实框架。在线文档会变化，工程选型需要固定版本验证。</p><ol>
 <li><a href="https://arxiv.org/abs/2608.25512" target="_blank" rel="noopener noreferrer">设计论文 · A Programming Paradigm for Spatiotemporal Composability</a><span>时空可组合性、机制和适用条件；系统边界见全文第 6.1 节，第 70—71 页。</span></li>
 <li><a href="https://github.com/deepseek-ai/deepseek-harness" target="_blank" rel="noopener noreferrer">DSH 官方仓库</a><span>论文关联、项目定位和开发者预览状态。</span></li>
@@ -145,37 +226,90 @@ body:not(.reading){padding-bottom:var(--footer)}body:not(.reading) .footer{posit
 <script>(() => {
 'use strict';
 const slides = [...document.querySelectorAll('.slide')];
-const dots = document.querySelector('.dots');
+const chapterButtons = [...document.querySelectorAll('.chapters button')];
+const chapterPages = document.querySelector('#chapter-pages');
+const chapterProgress = document.querySelector('#chapter-progress');
 const previous = document.querySelector('#previous');
 const next = document.querySelector('#next');
-let index = 0;
-let reading = false;
-slides.forEach((slide, i) => {
+const chapters = chapterButtons.map(button => {
+  const pages = slides.map((slide, i) => ({slide, i})).filter(page => page.slide.dataset.chapter === button.dataset.chapter);
+  const name = button.querySelector('.chapter-name').textContent.replace(/^\d+\s+/, '');
+  button.querySelector('.chapter-count').textContent = '共 ' + pages.length + ' 页';
+  button.setAttribute('aria-label', button.querySelector('.chapter-name').textContent + '，共 ' + pages.length + ' 页');
+  return {id:button.dataset.chapter, name, pages, button};
+});
+const pageButtons = slides.map((slide, i) => {
+  const chapter = chapters.find(item => item.id === slide.dataset.chapter);
+  const pageNumber = chapter.pages.findIndex(page => page.i === i)+1;
   const button = document.createElement('button');
   button.type = 'button';
-  button.setAttribute('aria-label', `第 ${i+1} 页：${slide.dataset.title}`);
+  button.className = 'chapter-page';
+  button.textContent = pageNumber + '  ' + slide.dataset.title;
+  button.setAttribute('aria-label', chapter.name + '，第 ' + pageNumber + ' 页：' + slide.dataset.title);
   button.addEventListener('click', () => go(i));
-  dots.append(button);
+  chapterPages.append(button);
+  return button;
 });
+let index = 0;
+let reading = false;
+const wheelGesture = {lastTime:-Infinity, direction:0, distance:0, scrolled:false, paged:false, lockedUntil:0};
+function blockWheelNavigation() {
+  wheelGesture.distance = 0;
+  wheelGesture.scrolled = true;
+  wheelGesture.paged = true;
+  wheelGesture.lockedUntil = performance.now() + 700;
+}
+
 function go(target, updateHash = true) {
+  if (target < 0) return;
+  blockWheelNavigation();
   index = Math.max(0, Math.min(slides.length-1, target));
+  const current = slides[index];
+  const chapter = chapters.find(item => item.id === current.dataset.chapter);
+  const chapterIndex = chapter.pages.findIndex(page => page.i === index);
+  const focused = document.activeElement;
+  const focusInHiddenContent = !reading && slides.some(slide => slide !== current && slide.contains(focused));
+  const focusInPages = chapterPages.contains(focused);
   slides.forEach((slide, i) => { slide.hidden = !reading && i !== index; });
-  [...dots.children].forEach((button, i) => button.setAttribute('aria-current', String(i === index)));
-  document.querySelectorAll('[data-chapter]').forEach(button => {
-    if (button.tagName === 'BUTTON') button.setAttribute('aria-current', String(button.dataset.chapter === slides[index].dataset.chapter));
+  chapters.forEach(item => item.button.setAttribute('aria-current', String(item === chapter)));
+  pageButtons.forEach((button, i) => {
+    button.hidden = slides[i].dataset.chapter !== chapter.id;
+    button.setAttribute('aria-current', i === index ? 'page' : 'false');
   });
-  document.querySelector('#counter').textContent = `${String(index+1).padStart(2,'0')} / ${String(slides.length).padStart(2,'0')}`;
-  document.querySelector('#foot-label').textContent = `${slides[index].dataset.title} · ← → 翻页`;
+  chapterPages.style.setProperty('--chapter-pages', chapter.pages.length);
+  chapterPages.setAttribute('aria-label', chapter.name + '的页面');
+  chapterProgress.textContent = chapter.name + ' · 第 ' + (chapterIndex+1) + ' / ' + chapter.pages.length + ' 页';
+  document.querySelector('#counter').textContent = '全篇 ' + String(index+1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
+  document.querySelector('#foot-label').textContent = current.dataset.title;
   previous.disabled = index === 0;
+  previous.setAttribute('aria-label', index > 0 ? '上一页：' + slides[index-1].dataset.title : '已经是第一页');
   next.disabled = index === slides.length-1;
-  if (updateHash && location.hash !== `#${slides[index].id}`) history.replaceState(null, '', `#${slides[index].id}`);
-  if (reading) slides[index].scrollIntoView({behavior:'instant', block:'start'});
+  const following = slides[index+1];
+  const nextKind = following ? (following.dataset.chapter === chapter.id ? '本章下一页' : '下一章') : '全篇结束';
+  const nextTitle = following ? following.dataset.title : '已到最后一页';
+  document.querySelector('#next-kind').textContent = nextKind;
+  document.querySelector('#next-title').textContent = nextTitle;
+  next.setAttribute('aria-label', nextKind + '：' + nextTitle);
+  if (updateHash && location.hash !== '#' + current.id) history.replaceState(null, '', '#' + current.id);
+  if (focusInHiddenContent || focusInPages) pageButtons[index].focus({preventScroll:true});
+  if (reading) current.scrollIntoView({behavior:'instant', block:'start'});
   else window.scrollTo({top:0, behavior:'instant'});
   window.dispatchEvent(new Event('meeting-slide-change'));
 }
 previous.addEventListener('click', () => go(index-1));
 next.addEventListener('click', () => go(index+1));
-document.querySelectorAll('.chapters button').forEach(button => button.addEventListener('click', () => go(slides.findIndex(slide => slide.dataset.chapter === button.dataset.chapter))));
+chapters.forEach(chapter => chapter.button.addEventListener('click', () => go(chapter.pages[0].i)));
+chapterPages.addEventListener('keydown', event => {
+  if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key) || event.altKey || event.ctrlKey || event.metaKey) return;
+  const chapter = chapters.find(item => item.id === slides[index].dataset.chapter);
+  const focusedIndex = pageButtons.findIndex(button => button.contains(event.target));
+  const local = chapter.pages.findIndex(page => page.i === (focusedIndex < 0 ? index : focusedIndex));
+  const target = event.key === 'Home' ? 0 : event.key === 'End' ? chapter.pages.length-1 : Math.max(0, Math.min(chapter.pages.length-1, local + (event.key === 'ArrowRight' ? 1 : -1)));
+  event.preventDefault();
+  event.stopPropagation();
+  go(chapter.pages[target].i);
+});
+
 document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => go(slides.findIndex(slide => slide.id === button.dataset.go))));
 document.querySelector('#reading').addEventListener('click', event => {
   reading = !reading;
@@ -189,12 +323,72 @@ document.querySelector('#sources-open').addEventListener('click', () => dialog.s
 document.querySelector('#sources-close').addEventListener('click', () => dialog.close());
 dialog.addEventListener('click', event => { if (event.target === dialog) { const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close(); } });
 document.addEventListener('keydown', event => {
-  if (document.querySelector('dialog[open]') || event.altKey || event.ctrlKey || event.metaKey || /INPUT|TEXTAREA|SELECT/.test(event.target.tagName) || event.target.closest('.study-switch')) return;
+  if (reading || document.querySelector('dialog[open]') || event.altKey || event.ctrlKey || event.metaKey || /INPUT|TEXTAREA|SELECT/.test(event.target.tagName) || event.target.isContentEditable || event.target.closest('.study-switch, [role="tablist"]')) return;
   if (event.key === 'ArrowRight' || event.key === 'PageDown') { event.preventDefault(); go(index+1); }
   if (event.key === 'ArrowLeft' || event.key === 'PageUp') { event.preventDefault(); go(index-1); }
   if (event.key === 'Home') { event.preventDefault(); go(0); }
   if (event.key === 'End') { event.preventDefault(); go(slides.length-1); }
 });
+// Preserve scrolling inside long pages; only a fresh gesture at an edge changes pages.
+function canScrollVertically(target, direction) {
+  const root = document.scrollingElement || document.documentElement;
+  for (let element = target; element && element !== root && element !== document.body; element = element.parentElement) {
+    const overflow = getComputedStyle(element).overflowY;
+    if (/(auto|scroll|overlay)/.test(overflow) && element.scrollHeight > element.clientHeight + 2) {
+      if (direction > 0 ? element.scrollTop + element.clientHeight < element.scrollHeight - 2 : element.scrollTop > 2) return true;
+    }
+  }
+  return direction > 0 ? root.scrollTop + root.clientHeight < root.scrollHeight - 2 : root.scrollTop > 2;
+}
+document.addEventListener('wheel', event => {
+  const now = performance.now();
+  const target = event.target instanceof Element ? event.target : event.target.parentElement;
+  if (reading || event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey ||
+      !target || target.closest('input, textarea, select, [contenteditable], .study-switch, dialog, iframe') ||
+      document.querySelector('dialog[open], .study-switch[open]') || Math.abs(event.deltaX) > Math.abs(event.deltaY) || !event.deltaY) {
+    wheelGesture.distance = 0;
+    wheelGesture.scrolled = true;
+    wheelGesture.lastTime = now;
+    return;
+  }
+  const direction = Math.sign(event.deltaY);
+  const freshGesture = now - wheelGesture.lastTime > 220;
+  if (freshGesture) {
+    wheelGesture.distance = 0;
+    wheelGesture.scrolled = false;
+    wheelGesture.paged = false;
+  } else if (direction !== wheelGesture.direction) {
+    wheelGesture.distance = 0;
+  }
+  wheelGesture.direction = direction;
+  wheelGesture.lastTime = now;
+  if (wheelGesture.paged || now < wheelGesture.lockedUntil) {
+    wheelGesture.paged = true;
+    wheelGesture.distance = 0;
+    if (event.cancelable) event.preventDefault();
+    return;
+  }
+  if (canScrollVertically(target, direction)) {
+    wheelGesture.distance = 0;
+    wheelGesture.scrolled = true;
+    return;
+  }
+  // Do not turn the tail of a content scroll into an accidental page change.
+  if (wheelGesture.scrolled || !event.cancelable) return;
+  const destination = index + direction;
+  if (destination < 0 || destination >= slides.length) {
+    wheelGesture.distance = 0;
+    return;
+  }
+  event.preventDefault();
+  const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+  wheelGesture.distance += Math.abs(event.deltaY) * unit;
+  if (wheelGesture.distance >= 80) go(destination);
+}, {passive:false});
+document.addEventListener('toggle', event => {
+  if (event.target.matches('.study-switch, dialog')) blockWheelNavigation();
+}, true);
+
 function hashNavigation() { const target = slides.findIndex(slide => `#${slide.id}` === location.hash); go(target < 0 ? 0 : target, false); }
 window.addEventListener('hashchange', hashNavigation);
 let mounted = true;

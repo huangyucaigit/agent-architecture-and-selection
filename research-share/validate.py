@@ -35,7 +35,7 @@ required = ['overview','reading'] + [f'q{i}' for i in range(1,11)] + ['cases','c
 assert audits['agent-research.html'].sections == required
 assert len(audits['dsh-meeting.html'].slides) == 8
 assert audits['index.html'].cards == 2
-placeholders = ['<!-- FOUNDATION_CONTENT -->','<!-- ECOLOGY_CONTENT -->','<!-- SELECTION_CONTENT -->','<!-- PRACTICE_CONTENT -->','<!-- ORIGINAL_RESEARCH -->','<!-- CASE_RESEARCH -->','<!-- STUDY_SWITCH -->','<!-- TAXONOMY_SLIDES -->','<!-- PORTAL_STYLE -->','<!-- LEGACY_REDIRECT -->']
+placeholders = ['<!-- FOUNDATION_CONTENT -->','<!-- ECOLOGY_CONTENT -->','<!-- SELECTION_CONTENT -->','<!-- PRACTICE_CONTENT -->','<!-- ORIGINAL_RESEARCH -->','<!-- CASE_RESEARCH -->','<!-- STUDY_SWITCH -->','<!-- TAXONOMY_SLIDES -->','<!-- DSH_VALIDATION -->','<!-- PORTAL_STYLE -->','<!-- LEGACY_REDIRECT -->']
 result = {}
 for name, audit in audits.items():
     duplicates = [i for i,n in Counter(audit.ids).items() if n>1]

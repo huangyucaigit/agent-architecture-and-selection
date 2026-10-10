@@ -1,0 +1,39 @@
+<div class="dsh-proof">
+  <figure class="dsh-proof-figure" aria-label="三类业务变化与 DSH 组合机制、验证依据的对应关系">
+    <div class="dsh-proof-head" aria-hidden="true"><span>业务变化</span><span></span><span>DSH 组合机制</span><span></span><span>同题验证</span></div>
+    <ol class="dsh-proof-rows">
+      <li class="dsh-proof-row">
+        <div class="dsh-proof-cell dsh-proof-change"><span class="dsh-proof-number">01</span><strong>替换查询服务</strong><small>数据接口或服务实现变化</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-mechanism"><span class="dsh-proof-kind">机制</span><strong>能力接口＋服务依赖</strong><small>在接口边界替换提供方</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-check"><span class="dsh-proof-kind">验证</span><strong>改动范围与切换正确性</strong><small>记录受影响组件，核对结果、授权与在途请求</small></div>
+      </li>
+      <li class="dsh-proof-row">
+        <div class="dsh-proof-cell dsh-proof-change"><span class="dsh-proof-number">02</span><strong>切换企业能力组合</strong><small>工具、技能与配置不同</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-mechanism"><span class="dsh-proof-kind">机制</span><strong>组合配置（Profile）</strong><small>装配插件包与覆盖配置</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-check"><span class="dsh-proof-kind">验证</span><strong>重复代码与权限一致性</strong><small>检查允许能力、版本追溯和企业边界</small></div>
+      </li>
+      <li class="dsh-proof-row">
+        <div class="dsh-proof-cell dsh-proof-change"><span class="dsh-proof-number">03</span><strong>更新或撤出插件</strong><small>组件、注册与依赖变化</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-mechanism"><span class="dsh-proof-kind">机制</span><strong>依赖协调＋注册清理</strong><small>管理组件拥有的注册与资源</small></div><span class="dsh-proof-arrow" aria-hidden="true">→</span>
+        <div class="dsh-proof-cell dsh-proof-check"><span class="dsh-proof-kind">验证</span><strong>资源释放与依赖状态</strong><small>检查插件占用、监听器、连接及在途任务</small></div>
+      </li>
+    </ol>
+    <figcaption>每行对应一项待检验的维护收益；这些机制与其他方案的能力可以重叠。</figcaption>
+  </figure>
+  <p class="dsh-proof-boundary"><strong>机制边界：</strong>Profile 负责装配，企业隔离、业务授权和版本绑定由产品与部署实现；服务替换需验证兼容与切换策略；资源清理不撤销已发生的业务写入。</p>
+  <details class="dsh-proof-protocol">
+    <summary>同题比较：基线、替代方案与验收</summary>
+    <div class="dsh-proof-protocol-body">
+      <p><strong>比较基线：</strong>现有 Java／业务实现。DSH、OpenCode V2、Pi 执行与嵌入部分固定版本，使用相同业务服务、数据、身份、模型、工具范围与任务预算。基线缺少的能力记录补齐工作量；固定查询与开放调查分别比较。</p>
+      <div class="dsh-proof-sequence" aria-label="统一原型验证任务"><span>接入查询工具</span><i aria-hidden="true">→</i><span>替换服务实现</span><i aria-hidden="true">→</i><span>切换企业配置</span><i aria-hidden="true">→</i><span>撤出插件查资源</span></div>
+      <div class="dsh-proof-table-wrap"><table class="dsh-proof-table"><caption>三类变化的替代实现与记录项</caption><thead><tr><th scope="col">变化</th><th scope="col">可比较的替代实现</th><th scope="col">重点记录</th></tr></thead><tbody>
+        <tr><th scope="row">服务替换</th><td>现有业务适配接口；OpenCode／Pi 的工具与扩展接口</td><td>改动位置与实际工时、受影响组件、契约兼容、在途请求处理</td></tr>
+        <tr><th scope="row">能力组合</th><td>应用配置与装配；OpenCode 插件配置；Pi 扩展装配</td><td>重复代码、配置差异、工具与技能范围、业务版本追溯、授权与企业隔离</td></tr>
+        <tr><th scope="row">插件撤出</th><td>应用显式清理；OpenCode V2 插件生命周期；Pi 扩展或 Chord 生命周期机制</td><td>插件拥有的注册与资源是否释放、依赖消失与恢复状态、在途任务处置、升级回归工作量</td></tr>
+      </tbody></table></div>
+      <div class="dsh-proof-gates"><p><b>基础门槛</b>结果与证据正确，业务授权有效，失败处理和版本追溯符合要求。</p><p><b>组合价值</b>比较改造工时、受影响组件、重复代码与升级维护量；检查插件占用释放，不要求共享资源总量归零。</p></div>
+      <p class="dsh-proof-adoption">基础门槛通过、组合维护收益覆盖适配成本后，才确定采用范围。若只是内容配置，现有实现已足够，可继续保留；本研究尚未执行这些对比任务。</p>
+      <p class="dsh-proof-sources">机制依据：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md" target="_blank" rel="noopener noreferrer">DSH 架构</a> · <a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md" target="_blank" rel="noopener noreferrer">Cordis 依赖与清理机制</a>。替代方案依据见生态项目归属与同类对比资料。</p>
+    </div>
+  </details>
+</div>

@@ -10,7 +10,7 @@ const original = fs.readFileSync(path.join(here, '..', originalName), 'utf8');
 const appendix = marked.parse(original).replace(/<table>/g, '<div class="table-scroll"><table>').replace(/<\/table>/g, '</table></div>');
 const cases = fs.readFileSync(path.join(here, '..', '第四部分_三类问数产品选型实战_V1_冻结版.md'), 'utf8');
 const caseAppendix = marked.parse(cases).replace(/<table>/g, '<div class="table-scroll"><table>').replace(/<\/table>/g, '</table></div>');
-const body = read('content.html').replace('<!-- STUDY_SWITCH -->', studyMenu('agent')).replace('<!-- FOUNDATION_CONTENT -->', read('foundation.html')).replace('<!-- ECOLOGY_CONTENT -->', read('ecology.html')).replace('<!-- SELECTION_CONTENT -->', read('selection.html')).replace('<!-- PRACTICE_CONTENT -->', read('practice.html')).replace('<!-- ORIGINAL_RESEARCH -->', appendix).replace('<!-- CASE_RESEARCH -->', caseAppendix);
+const body = read('content.html').replace('<!-- STUDY_SWITCH -->', studyMenu('agent')).replace('<!-- FOUNDATION_CONTENT -->', read('foundation.html')).replace('<!-- ECOLOGY_CONTENT -->', read('ecology.html')).replace('<!-- SELECTION_CONTENT -->', read('selection.html')).replace('<!-- PRACTICE_CONTENT -->', read('practice.html')).replace('<!-- DSH_VALIDATION -->', read('dsh-validation.html')).replace('<!-- ORIGINAL_RESEARCH -->', appendix).replace('<!-- CASE_RESEARCH -->', caseAppendix);
 const html = `<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="四部分理解行业智能体系统：图解架构与概念、技术生态与实现、需求判断与选型、三类问数产品实战。">
@@ -20,6 +20,7 @@ const html = `<!doctype html>
 ${read('ecology.css')}
 ${read('selection.css')}
 ${read('practice.css')}
+${read('dsh-validation.css')}
 ${read('navigation.css')}</style></head><body>${body}<script>${read('app.js')}\n${read('foundation.js')}
 ${read('ecology.js')}
 ${read('selection.js')}
