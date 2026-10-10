@@ -43,7 +43,7 @@
       <div class="loop-demo"><span class="label">机制示意 · 无模型调用</span><p id="loop-step-text" aria-live="polite"><strong>1 / 6 · 判断</strong>先确认时点、统计范围与库存口径。</p><div><button class="btn" id="loop-reset">重置</button><button class="btn primary" id="loop-next">推进一步 →</button></div></div>
     </div></article>
   </div>
-  <div class="mechanism-choice"><strong>如何判断？</strong><span>只需理解与生成<small>普通模型应用</small></span><i>／</i><span>执行路径可以预定义<small>工作流</small></span><i>／</i><span>后续动作依赖中间结果<small>智能体</small></span></div>
+  <div class="mechanism-choice"><strong>如何判断？</strong><span>只需理解与生成<small>普通模型应用</small></span><i>／</i><span>程序按预设分支推进<small>工作流</small></span><i>／</i><span>模型自主选择下一步<small>智能体</small></span></div>
   <div class="conclusion"><strong>实际系统可以组合：</strong>固定授权、计算和强制校验由程序执行；模型在获准范围内决定调查路径。工具调用次数多，不自动意味着需要智能体。</div>
   <p class="source-line">机制区分参考：<a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic：工作流、智能体与反馈循环</a>。图中库存任务为研究示例。</p>
 </section>
@@ -56,7 +56,7 @@
     <p class="source-line">官方依据：<a href="https://agentskills.io/specification">Agent Skills 规范</a><a href="https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture">MCP 架构</a>。插件包装是通用概念，依具体宿主实现。</p>
   </div>
   <div class="tab-panel" id="concept-execution" role="tabpanel" hidden>
-    <div class="runtime-enclosure"><span class="tag">运行时（Agent Runtime）· 管理生命周期、组件与资源</span><div class="orchestration-frame"><h3>智能体编排（Agent Orchestration）</h3><p>协调任务、流程与执行单元的分工、依赖和结果汇总。</p><div class="execution-pair"><div class="relation-box"><strong>智能体循环（Agent Loop）</strong><small>根据当前结果动态选择下一步</small><b>判断 → 行动 → 观察 ↺</b></div><span class="relation-plus">⇄</span><div class="relation-box"><strong>工作流（Workflow）</strong><small>按预设步骤、条件与状态推进</small><b>步骤 A → 条件 → 步骤 B</b></div></div><p class="diagram-caption">工作流中可嵌入智能体；智能体也可调用固定流程，编排不必采用多智能体。</p></div><div class="runtime-context"><strong>运行时上下文（Runtime Context）</strong><span>当前可用的模型、工具、服务、配置与任务状态</span><small>供执行过程使用；它是当前能力集合，区别于管理运行的机制。</small></div></div>
+    <div class="runtime-enclosure"><span class="tag">运行时（Agent Runtime）· 管理生命周期、组件与资源</span><div class="orchestration-frame"><h3>智能体编排（Agent Orchestration）</h3><p>协调任务、流程与执行单元的分工、依赖和结果汇总。</p><div class="execution-pair"><div class="relation-box"><strong>智能体循环（Agent Loop）</strong><small>模型依据当前结果选择下一步</small><b>判断 → 行动 → 观察 ↺</b></div><span class="relation-plus">⇄</span><div class="relation-box"><strong>工作流（Workflow）</strong><small>按预设步骤、条件与状态推进</small><b>步骤 A → 条件 → 步骤 B</b></div></div><p class="diagram-caption">工作流中可嵌入智能体；智能体也可调用固定流程，编排不必采用多智能体。</p></div><div class="runtime-context"><strong>运行时上下文（Runtime Context）</strong><span>当前可用的模型、工具、服务、配置与任务状态</span><small>供执行过程使用；它是当前能力集合，区别于管理运行的机制。</small></div></div>
     <div class="conclusion"><strong>三个不同问题：</strong>循环决定“现在要不要查”；运行时上下文说明“当前有什么可用”；业务服务端授权决定“该用户能不能查”。</div>
     <p class="note">执行支架（Agent Harness）围绕模型组合循环、工具、上下文与执行控制；运行时提供承载条件。图中外框表达职责关系，不要求同一进程；跨进程恢复和持久执行需另行核验。</p>
   </div>
