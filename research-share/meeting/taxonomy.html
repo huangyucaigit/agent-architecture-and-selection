@@ -1,0 +1,38 @@
+<section class="slide" id="classification" data-chapter="comparison" data-title="生态分类与协作" hidden aria-labelledby="title-classification">
+<p class="eyebrow"><span class="num">05</span> 生态地图 / 按主要技术职责定位</p>
+<div class="taxonomy-title"><h2 id="title-classification">先看生态，<em>再聚焦执行</em>。</h2><button class="quiet" data-open-inventory>项目归属表 ↗</button></div>
+<div class="eco-layout" id="ecosystem-map">
+  <div class="eco-figure">
+    <div class="eco-stage" aria-label="八类生态与主要协作关系">
+      <svg class="eco-links" aria-hidden="true"></svg>
+    </div>
+    <p class="eco-legend">框内：小类　箭头：职责间可组合关系　点击：查看项目</p>
+    <p class="sr-only">应用平台构建执行系统并交付应用；应用将任务交给执行系统并获取结果。执行系统使用模型、知识与工具；运行基础设施和观测治理支撑执行系统。箭头是职责关系示意，不代表所列项目已经集成，也不是固定执行顺序。</p>
+  </div>
+  <aside class="eco-detail" id="ecosystem-detail" aria-labelledby="eco-detail-title">
+    <span class="label">当前定位</span>
+    <h3 id="eco-detail-title">02 智能体构建与执行控制</h3>
+    <p id="eco-detail-purpose">定义任务，并组织模型、工具、状态和执行过程。</p>
+    <span class="label" id="eco-project-label">执行宿主代表</span>
+    <ul id="eco-detail-projects"></ul>
+    <p class="eco-boundary" id="eco-detail-boundary"></p>
+    <div class="eco-detail-actions"><button class="button primary" id="eco-focus-next" data-go="routes">展开五种路线 →</button><button class="button" id="eco-focus-back" hidden>回到②执行控制</button></div>
+  </aside>
+  <span class="sr-only" id="eco-announcement" aria-live="polite"></span>
+</div>
+<div class="takeaway"><svg class="icon"><use href="#i-arrow"/></svg><div>先定位职责，再在同一职责内比较项目。<small>研究分类按具体交付物归属；图示协作关系，项目实际集成另行验证。</small></div><button class="quiet sources-trigger">分类依据 ↗</button></div>
+</section>
+<section class="slide" id="routes" data-chapter="comparison" data-title="构建与执行的五种路线" hidden aria-labelledby="title-routes">
+<p class="eyebrow"><span class="num">06</span> 聚焦② / 构建与执行控制中的小类</p>
+<div class="taxonomy-title"><h2 id="title-routes">同一职责，<em>五种设计重心</em>。</h2><button class="quiet" data-go="classification">← 返回生态图</button></div>
+<div class="framework-routes" id="framework-routes"></div>
+<div class="route-scope"><strong>比较对象要一致</strong><span>这里比较 Pi、OpenCode 的执行与嵌入部分；成品助手在生态第⑧类记录。</span><button class="button" data-go="harness">比较 DSH / OpenCode / Pi →</button></div>
+<div class="takeaway"><svg class="icon"><use href="#i-arrow"/></svg><div>小类描述默认抽象与复用方式，功能可以重叠。<small>开发工具包（SDK）提供编程接口；执行支架（Harness）组织模型周围的任务执行机制。两者可同时存在。</small></div><button class="quiet" data-open-inventory>完整项目表 ↗</button></div>
+</section>
+<dialog id="inventory-dialog" aria-labelledby="inventory-title">
+<div class="dialog-head"><h2 id="inventory-title">项目归属与比较对象</h2><button class="quiet" id="inventory-close" aria-label="关闭项目归属表">关闭 ×</button></div>
+<p class="footnote">分类资料核对：2026-10-10。来源分为“原始研究”“研究补充”“生态示例”；项目品牌下的产品、执行内核与独立组件分别记录。<span class="interaction-hint">点击名称，查看官方资料。</span></p>
+<div class="table-wrap inventory-wrap"><table class="inventory-table"><caption class="sr-only">项目、主要职责类别、比较对象及原资料位置</caption><thead><tr><th scope="col">项目 / 交付物</th><th scope="col">主要职责类别</th><th scope="col">比较重点</th><th scope="col">来源范围</th></tr></thead><tbody id="project-inventory"></tbody></table></div>
+<details class="inventory-notes"><summary>原始研究分组与生态分类的对应关系</summary><div>Q5 的“核心与开发、任务与能力组织、生产运行、产品与平台化”是阅读分组；按主要技术职责分类。Q7 的应用内开发框架、持久工作流、执行支架主要在②比较，托管运行在⑤比较。Q1 的 OpenClaw、WorkBuddy 作为成品应用进入⑧。</div></details>
+<details class="inventory-notes"><summary>标准规范和通用工程依赖怎样记录？</summary><div>模型上下文协议（MCP）、Agent Skills 技能规范、JSON Schema 配置结构规范单独标注为标准；其具体实现才进入项目表。networknt json-schema-validator 是 Java 配置校验依赖，记录在行业配置方案中，非单独的智能体框架。问数插件和行业技能包是案例中的业务交付物。</div></details>
+</dialog>

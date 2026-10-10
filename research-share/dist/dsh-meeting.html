@@ -1,0 +1,361 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="从设计论文到架构能力，以生态分类图定位项目，再比较构建与执行路线、DSH、OpenCode 和 Pi。"><meta name="color-scheme" content="light"><title>DeepSeek Harness 设计理念与架构解析</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232a4ff2'/%3E%3Cpath d='M9 10h6v6H9zm8 0h6v6h-6zm-8 8h6v6H9zm8 0h6v6h-6z' fill='white'/%3E%3C/svg%3E"><style>:root{--ink:#17263e;--muted:#59677c;--blue:#294fed;--pale:#eef2ff;--line:#dce2ed;--paper:#f7f8fb;--green:#11715c;--nav:72px;--footer:72px;font-family:Inter,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--paper);font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}button:disabled{opacity:.35;cursor:default}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #e79b39;outline-offset:4px}a{color:var(--blue);text-underline-offset:3px}svg.icon{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.symbols{position:absolute;width:0;height:0;overflow:hidden}[hidden]{display:none!important}.topbar{height:var(--nav);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 3.4vw;background:#fff}.brand{display:flex;align-items:center;gap:12px;white-space:nowrap}.brandmark{background:var(--blue);color:#fff;padding:9px;border-radius:10px;display:flex}.brand strong{font-size:17px;letter-spacing:.02em}.brand small{display:block;font-size:11px;color:var(--muted);letter-spacing:.08em;margin-top:3px}.chapters{display:flex;gap:6px}.chapters button,.quiet{border:0;background:transparent;color:var(--muted);padding:10px 12px;border-radius:7px;font-size:13px}.chapters button[aria-current=true]{background:var(--pale);color:var(--blue);font-weight:700}.actions{display:flex;gap:3px}.quiet:hover{background:var(--pale);color:var(--blue)}main{max-width:1440px;margin:auto}.slide{padding:clamp(28px,4.3vh,52px) clamp(24px,5.3vw,76px) 24px;min-height:calc(100dvh - var(--nav) - var(--footer));display:flex;flex-direction:column;gap:20px;animation:arrive .22s ease}.eyebrow{display:flex;align-items:center;gap:12px;color:var(--blue);font-size:12px;font-weight:700;letter-spacing:.1em;margin:0}.eyebrow .num{font-family:Consolas,monospace;font-size:14px;border:1px solid #bfcafd;padding:4px 7px;border-radius:5px}h1,h2,h3,p{margin:0}h1,h2{font-size:clamp(30px,3.7vw,52px);line-height:1.3;letter-spacing:-.035em;font-weight:750}h1 em,h2 em{font-style:normal;color:var(--blue)}h3{font-size:21px;line-height:1.4}.lede{color:var(--muted);font-size:clamp(15px,1.4vw,19px);line-height:1.7;max-width:1060px}.lead-body{display:grid;grid-template-columns:1.1fr 1fr;gap:5vw;align-items:center;flex:1}.paper{border-left:3px solid var(--blue);padding:5px 0 5px 20px;margin-bottom:30px}.paper span{font-size:12px;color:var(--muted)}.paper h3{font-size:22px;margin:12px 0 6px}.paper .english{font-size:13px;color:var(--muted);line-height:1.7}.statement{font-size:clamp(22px,2.3vw,32px);line-height:1.7;max-width:640px}.statement strong{color:var(--blue)}.path{display:flex;flex-direction:column;gap:8px}.path-row{display:flex;align-items:center;gap:20px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px}.path-row.featured{background:var(--ink);color:#fff;border-color:var(--ink)}.path-row .icon{width:30px;height:30px;color:var(--blue)}.path-row.featured .icon{color:#aabbff}.path-row p{font-size:14px;color:var(--muted);margin-top:5px;line-height:1.5}.path-row.featured p{color:#c1cde1}.connector{font-size:12px;color:var(--muted);padding-left:36px}.takeaway{border-top:1px solid var(--line);padding-top:15px;display:flex;align-items:flex-start;gap:12px;font-size:17px;line-height:1.6;margin-top:auto}.takeaway .icon{color:var(--blue);margin-top:2px}.takeaway small{display:block;font-size:12px;color:var(--muted);margin-top:4px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}.concept{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px}.concept-head{display:flex;gap:14px;align-items:center;margin-bottom:14px}.icon-box{display:flex;padding:12px;border-radius:10px;background:var(--pale);color:var(--blue)}.en{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}.concept>p{font-size:18px;line-height:1.65}.demo{margin-top:20px;background:var(--paper);border-radius:8px;padding:16px}.demo-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:14px}.demo small{font-size:11px;color:var(--muted)}.button{border:1px solid var(--blue);color:var(--blue);background:#fff;border-radius:7px;padding:9px 15px;font-size:13px;font-weight:600}.button.primary{background:var(--blue);color:#fff}.resources{display:flex;gap:8px;flex-wrap:wrap}.resource{background:#fff;border:1px solid var(--line);padding:8px 10px;border-radius:5px;font-size:13px}.resource.off{opacity:.45;text-decoration:line-through}.status{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--green);line-height:1.6}.status::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}.status.wait{color:#856224}.demo-note{font-size:11px;line-height:1.5;color:var(--muted);margin-top:12px}.mechanisms{display:flex;gap:20px;font-size:13px;color:var(--muted);line-height:1.7}.mechanisms>span{flex:1}.mechanisms strong{color:var(--ink)}.footer{min-height:var(--footer);border-top:1px solid var(--line);background:#fff;display:flex;align-items:center;gap:22px;padding:12px 3.4vw}.foot-label{font-size:12px;color:var(--muted);min-width:180px}.dots{display:flex;gap:8px;flex:1;justify-content:center}.dots button{width:27px;height:5px;padding:0;border:0;background:#d8dfed;border-radius:5px}.dots button[aria-current=true]{background:var(--blue);width:48px}.pager{display:flex;align-items:center;gap:14px}.pager>button{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink)}.counter{font-family:Consolas,monospace;font-size:13px;min-width:55px;text-align:center}.source-link{font-size:12px;white-space:nowrap}.footnote{font-size:12px;color:var(--muted);line-height:1.6}.footnote a{color:inherit}details{font-size:13px;line-height:1.8;color:var(--muted)}summary{cursor:pointer;color:var(--muted);width:fit-content}details[open]>div,details[open]>p{padding-top:9px;max-width:1000px}dialog{border:1px solid var(--line);border-radius:16px;padding:30px;max-width:850px;width:calc(100% - 32px);max-height:85dvh;color:var(--ink);box-shadow:0 20px 100px #13223b33}dialog::backdrop{background:#15223a66;backdrop-filter:blur(3px)}.dialog-head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:16px}.dialog-head h2{font-size:26px}dialog ol{padding-left:22px;margin:15px 0}dialog li{margin:12px 0;font-size:14px;line-height:1.65}dialog li span{display:block;font-size:12px;color:var(--muted)}body.reading main{max-width:1300px}body.reading .slide{min-height:auto;padding-top:55px;padding-bottom:55px;border-bottom:1px solid var(--line)}body.reading .footer{position:sticky;bottom:0}body.reading .lead-body{padding:20px 0}body.reading .takeaway{margin-top:12px}.skip{position:fixed;top:-60px;left:12px;z-index:30;background:white;padding:10px}.skip:focus{top:10px}@keyframes arrive{from{opacity:.6;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.arch-layout{display:grid;grid-template-columns:1.45fr 1fr;gap:30px;align-items:stretch}.arch-diagram{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px}.arch-entry{display:flex;align-items:center;justify-content:center;gap:12px;font-size:14px}.arch-entry .icon{color:var(--blue)}.arch-line,.arch-external{text-align:center;font-size:12px;color:var(--muted);line-height:1.6;margin:10px 0}.arch-external{margin-bottom:0}.plugin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.plugin-node{border:1px solid var(--line);background:var(--paper);padding:15px 5px;border-radius:8px;display:flex;align-items:center;flex-direction:column;gap:8px;color:var(--ink)}.plugin-node strong{font-size:15px}.plugin-node span{font-size:10px;color:var(--muted)}.plugin-node[aria-pressed=true]{border-color:var(--blue);background:var(--pale);color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}.context-bar{margin-top:12px;background:var(--pale);border:1px solid #d7dffe;padding:13px;border-radius:8px;text-align:center;font-size:14px}.context-bar span{display:block;font-size:12px;color:var(--muted);margin-top:5px}.cordis-bar{background:var(--ink);color:#fff;border-radius:8px;margin-top:8px;padding:13px;text-align:center;font-size:15px}.cordis-bar small{display:block;font-size:11px;color:#c2cfe5;margin-top:5px}.component-detail{background:var(--pale);border-radius:12px;padding:26px;display:flex;flex-direction:column;align-items:flex-start;gap:14px}.label{font-size:11px;color:var(--muted);letter-spacing:.06em;font-weight:600}.component-detail h3{font-size:26px;color:var(--blue)}.component-detail p{font-size:16px;line-height:1.8}.detail-divider{width:100%;height:1px;background:#d4ddfa}.detail-tag{margin-top:auto;font-size:11px;color:var(--blue);border:1px solid #c4cff8;border-radius:4px;padding:5px 8px}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.feature{background:#fff;border:1px solid var(--line);padding:25px;border-radius:12px;position:relative;display:flex;flex-direction:column;gap:14px}.feature-no{font-family:Consolas,monospace;font-size:12px;color:var(--blue)}.feature>.icon{position:absolute;right:25px;top:22px;color:var(--blue)}.feature>p{font-size:16px;line-height:1.8;color:var(--muted)}.feature-example{border-top:1px solid var(--line);padding-top:14px;margin-top:auto;font-size:14px;line-height:1.7}.feature-example span{display:block;font-size:11px;color:var(--blue);margin-bottom:5px}.industry-strip{background:var(--pale);padding:17px 20px;border-radius:8px;display:flex;align-items:center;gap:15px;flex-wrap:wrap;font-size:14px}.industry-strip strong{color:var(--blue);font-size:12px}.industry-strip b{font-weight:400;color:var(--blue)}.industry-strip small{margin-left:auto;color:var(--muted);font-size:11px}.lens-tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);padding-bottom:10px}.lens-tabs button{border:0;border-radius:6px;background:transparent;color:var(--muted);padding:12px 15px;font-size:14px}.lens-tabs button[aria-selected=true]{background:var(--blue);color:#fff}.lens-question{font-size:14px;color:var(--muted);margin-bottom:17px;line-height:1.7}.category-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.category-grid.four{grid-template-columns:repeat(4,1fr)}.category{background:#fff;border:1px solid var(--line);padding:23px;border-radius:10px;display:flex;flex-direction:column;gap:12px}.category>.icon{color:var(--blue)}.category>p{font-size:14px;color:var(--muted);line-height:1.7}.category.highlighted{border-color:#9eb1fb;background:var(--pale)}.category ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}.category li{font-size:14px;line-height:1.6}.category li strong{font-size:13px;font-weight:600}.category li span{display:block;font-size:12px;color:var(--muted)}.category-note{border-top:1px solid var(--line);padding-top:10px;font-size:12px;line-height:1.7;color:var(--muted);margin-top:auto}.four .category{padding:22px 18px;min-height:250px}.four h3{font-size:19px}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff}.compare,.route-table{border-collapse:collapse;width:100%;font-size:16px;line-height:1.7;text-align:left}.compare{min-width:850px}.compare th,.compare td,.route-table th,.route-table td{padding:18px 20px;border-bottom:1px solid var(--line);vertical-align:top}.compare thead th,.route-table thead th{background:#f0f3f8;font-size:18px}.compare thead th span{display:block;font-size:11px;color:var(--muted);font-weight:400}.compare th:first-child{width:15%;font-size:13px;white-space:nowrap}.compare th:not(:first-child){width:28.33%}.compare td{font-size:15px}.compare .focus{background:var(--pale)}.compare thead .focus{background:#dfe6ff;color:var(--blue)}.compare tbody tr:last-child>*:not(.focus){background:#fafbfe}.compare tr:last-child>*,.route-table tr:last-child>*{border-bottom:0}.route-table{min-width:760px;font-size:15px}.route-table thead th{font-size:14px}.route-table th,.route-table td{padding:16px 20px}.route-table th:first-child{width:29%;font-size:15px}.route-table td:nth-child(2){width:26%}.route-table td span{display:block;font-size:12px;color:var(--muted)}.route-table tbody tr:nth-child(4)>*{background:var(--pale)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.decision-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:30px}.decision-main{padding:23px;background:#fff;border:1px solid var(--line);border-radius:12px}.change-row{display:grid;grid-template-columns:30px 1fr;column-gap:15px;row-gap:5px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}.change-row:last-child{border-bottom:0;padding-bottom:0}.change-row .icon{grid-row:span 2;color:var(--blue)}.change-row strong{font-size:18px}.change-row span{font-size:13px;color:var(--muted)}.validation{background:var(--pale);padding:26px;border-radius:12px;display:flex;flex-direction:column;align-items:flex-start;gap:15px}.validation h3{color:var(--blue);font-size:24px}.validation p{font-size:16px;line-height:1.8}
+@media(min-width:1000px) and (min-height:850px){.slide{gap:26px}.concept{padding:30px}.lead-body{padding:25px 0}}
+@media(max-width:1000px){.topbar{padding:0 20px}.brand small{display:none}.chapters button{padding:8px;font-size:12px}.quiet{padding:8px;font-size:12px}.slide{padding:28px 30px 22px;gap:18px}.foot-label{min-width:0}.concept{padding:20px}.lead-body{gap:30px}.path-row{padding:18px}.takeaway{font-size:15px}.mechanisms{gap:15px}}
+@media(max-width:700px){:root{--nav:110px;--footer:66px}.topbar{height:auto;min-height:var(--nav);flex-wrap:wrap;gap:8px;padding:12px 16px}.brand{flex:1}.brand strong{font-size:15px}.brandmark{padding:7px}.chapters{order:3;width:100%;justify-content:center}.chapters button{flex:1}.slide{padding:25px 20px 20px;gap:18px}h1,h2{font-size:30px;letter-spacing:-.02em}.lead-body,.two-col{grid-template-columns:1fr;gap:20px}.lead-body{align-items:start}.paper{margin-bottom:18px}.paper h3{font-size:19px}.statement{font-size:22px}.path-row{padding:16px}.concept>p{font-size:16px}.concept h3{font-size:19px}.mechanisms{flex-direction:column;gap:8px}.footer{padding:10px 16px;gap:10px;flex-wrap:wrap}.foot-label{display:none}.dots{gap:5px;justify-content:flex-start}.dots button{width:13px}.dots button[aria-current=true]{width:24px}.pager{gap:7px}.pager>button{width:35px;height:35px}.takeaway{font-size:15px}.source-link{white-space:normal}.demo-top{flex-wrap:wrap}dialog{padding:22px}.quiet{font-size:12px;padding:8px}body.reading .footer{position:static}}
+@media(max-width:1000px){.arch-layout{grid-template-columns:1.3fr 1fr;gap:18px}.plugin-grid{grid-template-columns:repeat(2,1fr)}.plugin-node{padding:10px}.component-detail{padding:20px}.feature-grid,.category-grid{gap:14px}.feature,.category{padding:19px}.feature h3,.category h3{font-size:19px}.feature>p{font-size:14px}.feature-example{font-size:13px}.category-grid.four{grid-template-columns:repeat(2,1fr)}.four .category{min-height:190px}.industry-strip small{width:100%;margin-left:0}.decision-grid{gap:20px}.compare td{font-size:14px}}
+@media(max-width:700px){.arch-layout,.feature-grid,.category-grid,.category-grid.four,.decision-grid{grid-template-columns:1fr}.arch-layout{gap:16px}.plugin-grid{grid-template-columns:repeat(2,1fr)}.component-detail{min-height:250px}.component-detail h3{font-size:23px}.component-detail p{font-size:15px}.feature{gap:12px}.feature>p{font-size:15px}.lens-tabs{gap:4px;flex-wrap:wrap}.lens-tabs button{font-size:12px;padding:10px}.category{gap:10px}.category ul{gap:10px}.four .category{min-height:0}.industry-strip{gap:10px;padding:15px;font-size:12px}.industry-strip strong{width:100%}.table-wrap{margin:0 -2px}.compare th,.compare td,.route-table th,.route-table td{padding:14px}.validation p{font-size:15px}.takeaway>button{padding:4px;font-size:11px;white-space:nowrap}.change-row strong{font-size:16px}}
+.category .framework-list{gap:12px}.category .framework-list li{display:flex;flex-direction:column;gap:3px}.category .framework-list .framework-name{font-size:21px;font-weight:750;line-height:1.25;letter-spacing:-.02em;color:var(--blue)}.category .framework-list .framework-role{font-size:12px;line-height:1.5;color:var(--muted)}.route-table td>strong{color:var(--blue);font-size:17px}
+#panel-selection .category{position:relative;gap:10px}#panel-selection .category>.icon{position:absolute;right:18px;top:18px;width:22px;height:22px}#panel-selection .category>h3{padding-right:28px}#panel-selection .framework-list{gap:8px}#panel-selection .framework-list li{gap:2px}
+body:not(.reading){padding-bottom:var(--footer)}body:not(.reading) .footer{position:fixed;left:0;right:0;bottom:0;z-index:10}
+@media(min-width:1001px){.slide{padding:30px 60px 18px;gap:18px}.slide .lead-body{padding:0}h1,h2{font-size:46px;line-height:1.25}.path-row{padding:18px}.takeaway{font-size:16px}.category{padding:20px}.feature{padding:23px}}
+@media(min-width:1001px) and (max-height:820px){:root{--nav:60px;--footer:60px}.slide{padding:22px 50px 16px;gap:14px}h1,h2{font-size:36px}.eyebrow .num{font-size:12px;padding:3px 6px}.lede{font-size:16px}.path{gap:6px}.path-row{padding:12px 16px}.path-row h3{font-size:19px}.path-row p{font-size:12px;margin-top:3px}.connector{font-size:11px}.paper{margin-bottom:18px}.paper h3{font-size:20px}.statement{font-size:26px}.takeaway{font-size:14px;padding-top:12px}.takeaway small{font-size:11px}.feature{padding:20px;gap:12px}.feature>p{font-size:14px}.category{padding:18px;gap:10px}.category li{font-size:13px}.category ul{gap:8px}.category>p{font-size:13px}.lens-tabs{padding-bottom:8px}.lens-tabs button{padding:9px 13px;font-size:13px}.lens-question{margin-bottom:13px}.compare th,.compare td{padding:15px 18px}.route-table th,.route-table td{padding:13px 18px}.validation p{font-size:15px}}
+@media(min-width:1001px) and (max-height:820px){.category .framework-list{gap:10px}.category .framework-list .framework-name{font-size:20px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important}}
+@media print{.topbar,.footer,.actions,.demo-top button,.lens-tabs{display:none!important}.slide,.slide[hidden]{display:flex!important;min-height:auto;break-after:page;padding:10mm 6mm;animation:none}.slide:last-child{break-after:auto}body,body:not(.reading){background:white;padding-bottom:0}h1,h2{font-size:27pt}.lede{font-size:11pt}.concept>p,.takeaway{font-size:11pt}.lead-body{grid-template-columns:1fr 1fr;gap:20px}.two-col{grid-template-columns:1fr 1fr}.concept{padding:15px}.takeaway{margin-top:15px}.footnote{font-size:9pt}.source-link{display:none}details{display:none}dialog{display:none!important}a{color:inherit}.lens-panel[hidden]{display:block!important}.lens-panel{margin-bottom:15px}.lens-panel:not([data-lens-panel=selection]){break-before:page}.table-wrap{overflow:visible!important}table{font-size:9pt!important;min-width:0!important}.arch-layout{grid-template-columns:1fr 1fr!important}}
+
+.arch-hint{font-size:11px;line-height:1.6;color:var(--muted);margin:0 0 10px}@media print{.interaction-hint{display:none!important}}
+
+.taxonomy-title{display:flex;align-items:center;justify-content:space-between;gap:16px}.taxonomy-title>.quiet{flex-shrink:0}
+.eco-layout{display:grid;grid-template-columns:minmax(0,1.95fr) minmax(285px,1fr);gap:24px;align-items:stretch}.eco-figure{min-width:0;display:flex;flex-direction:column;justify-content:center}.eco-stage{position:relative;isolation:isolate;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-areas:"platform platform platform product product product" ". control control control control ." "model model knowledge knowledge tools tools" "runtime runtime runtime governance governance governance";gap:32px 16px;padding:25px 26px 0}.eco-links{position:absolute;inset:0;width:100%;height:100%;z-index:-1;overflow:visible;pointer-events:none}.eco-links text{font-size:11px}.eco-node{min-width:0;text-align:left;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);padding:12px;min-height:77px}.eco-node>strong{font-size:14px;line-height:1.45}.eco-node>span{font-size:11px;line-height:1.6;color:var(--muted)}.eco-node[aria-pressed=true]{background:var(--pale);border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}.eco-node[aria-pressed=true]>strong{color:var(--blue)}
+.eco-node[data-eco-node=platform]{grid-area:platform}.eco-node[data-eco-node=product]{grid-area:product}.eco-node[data-eco-node=control]{grid-area:control}.eco-node[data-eco-node=model]{grid-area:model}.eco-node[data-eco-node=knowledge]{grid-area:knowledge}.eco-node[data-eco-node=tools]{grid-area:tools}.eco-node[data-eco-node=runtime]{grid-area:runtime}.eco-node[data-eco-node=governance]{grid-area:governance}
+.eco-legend{text-align:center;font-size:11px;line-height:1.6;color:var(--muted);margin-top:14px}.eco-detail{background:var(--pale);border:1px solid #d6dffa;border-radius:12px;padding:23px;display:flex;flex-direction:column;align-items:flex-start;gap:11px;min-width:0}.eco-detail>h3{color:var(--blue);font-size:23px;line-height:1.45}.eco-detail>p{font-size:14px;line-height:1.7}.eco-detail .label{line-height:1.5}.eco-detail ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;width:100%}.eco-detail li{display:flex;flex-direction:column;gap:3px}.eco-project-name{font-size:19px;font-weight:700;line-height:1.4;text-decoration:none;color:var(--blue);overflow-wrap:anywhere}.eco-detail li>span{font-size:11px;line-height:1.5;color:var(--muted)}.eco-detail .eco-boundary{font-size:12px;border-top:1px solid #cfd9fa;padding-top:10px;margin-top:auto;color:var(--muted)}.eco-detail-actions{display:flex;gap:8px;flex-wrap:wrap}.eco-detail-actions .button{font-size:12px;padding:8px 12px}
+.framework-routes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.route-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:9px;min-width:0}.route-card>.icon{position:absolute;right:18px;top:18px;width:21px;height:21px;color:var(--blue)}.route-card>h3{font-size:18px;line-height:1.4;padding-right:27px}.route-card>p{font-size:13px;color:var(--muted);line-height:1.6}.route-card ul{list-style:none;padding:0;margin:3px 0;display:flex;flex-wrap:wrap;gap:7px 16px}.route-card li{min-width:0;max-width:100%}.route-project-name{font-size:18px;font-weight:700;line-height:1.4;overflow-wrap:anywhere;text-decoration:none;color:var(--blue)}.route-card>small{margin-top:auto;font-size:11px;line-height:1.6;color:var(--muted)}.route-card-host{grid-column:span 2;background:var(--pale);border-color:#a6b7fb}.route-card-host ul{gap:12px 25px}.route-card-host .route-project-name{font-size:22px}.route-scope{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--pale);border-radius:8px;font-size:12px;line-height:1.6}.route-scope>strong{white-space:nowrap;color:var(--blue)}.route-scope>.button{margin-left:auto;font-size:12px;white-space:nowrap}
+#inventory-dialog{max-width:1180px}.inventory-wrap{margin:17px 0}.inventory-table{width:100%;min-width:760px;border-collapse:collapse;text-align:left;font-size:13px;line-height:1.7}.inventory-table th,.inventory-table td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}.inventory-table thead{background:var(--pale)}.inventory-table th:first-child{width:27%}.inventory-table td:nth-child(2){width:22%}.inventory-table td:nth-child(3){width:30%}.inventory-table td:nth-child(4){color:var(--muted);font-size:12px}.inventory-name{text-decoration:none;font-weight:650}.inventory-notes{margin-top:13px}
+@media(min-width:1001px) and (max-height:820px){#classification{padding-top:18px;gap:12px}#classification h2,#routes h2{font-size:34px}.eco-layout{gap:18px;grid-template-columns:minmax(0,2fr) minmax(285px,1fr)}.eco-stage{gap:25px 14px;padding-top:23px}.eco-node{padding:8px 10px;gap:3px;min-height:62px}.eco-node>strong{font-size:13px}.eco-node>span{font-size:11px;line-height:1.5}.eco-detail{padding:17px;gap:8px}.eco-detail>h3{font-size:20px}.eco-detail>p{font-size:13px}.eco-detail ul{gap:8px}.eco-project-name{font-size:17px}.eco-legend{margin-top:11px}.eco-detail .eco-boundary{font-size:11px;line-height:1.6;padding-top:8px}.framework-routes{gap:14px}.route-card{padding:15px 17px;gap:7px}.route-card>h3{font-size:17px}.route-card ul{gap:5px 14px}.route-project-name{font-size:17px}.route-card-host .route-project-name{font-size:21px}.route-scope{padding:10px 14px}}
+@media(max-width:1100px){.eco-layout{grid-template-columns:1fr}.eco-detail{gap:10px}.eco-detail ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.eco-stage{min-height:0}.eco-figure{justify-content:flex-start}.framework-routes{grid-template-columns:repeat(2,minmax(0,1fr))}.route-card-host{grid-column:span 2}.route-scope{flex-wrap:wrap}.route-scope>span{flex:1}.route-scope>.button{margin-left:0}}
+@media(max-width:700px){.taxonomy-title{align-items:flex-start;gap:8px}.taxonomy-title>.quiet{font-size:11px;padding:5px}.taxonomy-title h2{font-size:29px}.eco-detail ul{grid-template-columns:1fr}.eco-detail{padding:20px}.eco-layout{gap:20px}.framework-routes{grid-template-columns:1fr}.route-card-host{grid-column:auto}.route-card{padding:20px}.route-project-name{font-size:20px}.route-card-host .route-project-name{font-size:21px}.route-scope>strong{width:100%}.route-scope>span{flex:auto}.route-scope>.button{white-space:normal}.eco-legend{font-size:11px}.eco-project-name{font-size:20px}}
+@media(max-width:650px){.eco-stage{grid-template-columns:1fr;grid-template-areas:"platform" "product" "control" "model" "knowledge" "tools" "runtime" "governance";padding:0 26px;gap:35px}.eco-node{min-height:82px;padding:13px}.eco-node>strong{font-size:15px}.eco-node>span{font-size:12px}}
+@media print{.eco-layout{grid-template-columns:1fr 1fr;gap:12px}.eco-stage{grid-template-columns:repeat(6,minmax(0,1fr));grid-template-areas:"platform platform platform product product product" ". control control control control ." "model model knowledge knowledge tools tools" "runtime runtime runtime governance governance governance";gap:25px 10px}.eco-node{min-height:70px;padding:8px}.eco-node>strong{font-size:10px}.eco-node>span,.eco-links text{font-size:9px}.eco-detail-actions,.taxonomy-title>.quiet,.route-scope>.button{display:none}.framework-routes{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.route-card{padding:12px}.route-card>h3{font-size:12px}.route-project-name,.route-card-host .route-project-name{font-size:12px}}
+
+.study-switch{position:relative;flex-shrink:0;font-family:inherit;color:#172b45;line-height:1.5}.study-switch>summary{list-style:none;display:flex;align-items:center;gap:7px;cursor:pointer;padding:8px 10px;border:1px solid #d4dfed;background:#f8faff;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap;width:auto;color:#294f83}.study-switch>summary::-webkit-details-marker{display:none}.study-switch>summary svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6}.study-switch>summary i{font-style:normal;color:#7b8ba3;font-size:14px}.study-switch[open]>summary{background:#eaf1ff;border-color:#8dadde}.study-switch>nav{position:absolute;right:0;top:calc(100% + 10px);z-index:100;width:282px;max-width:calc(100vw - 24px);padding:7px;background:#fff;border:1px solid #d6e1ee;border-radius:12px;box-shadow:0 15px 45px #162f5129;text-align:left;white-space:normal}.study-switch>nav a{display:block;position:relative;text-decoration:none;color:#203753;border-radius:7px;padding:12px 45px 12px 13px}.study-switch>nav a:hover,.study-switch>nav a:focus-visible{background:#f0f5fd}.study-switch>nav a[aria-current=page]{background:#eaf1ff;color:#275dd9}.study-switch b{display:block;font-size:13px;line-height:1.5;font-weight:650}.study-switch small{display:block!important;font-size:11px!important;line-height:1.6!important;color:#6d7f96!important;font-weight:400!important;letter-spacing:0!important;margin-top:3px!important}.study-switch em{position:absolute;right:12px;top:15px;font-style:normal;font-size:10px;color:#4770a9}.study-switch>summary:focus-visible{outline:3px solid #4885ff;outline-offset:3px}.topbar:has(.study-switch){z-index:40;position:relative}body .topbar:has(.progress){position:fixed}.top-actions .study-switch{margin-right:2px}.actions .study-switch{margin-right:5px}@media(max-width:760px){.study-switch>summary{padding:8px;gap:0}.study-switch>summary span,.study-switch>summary i{display:none}.study-switch>nav{position:fixed;top:60px;right:12px;width:282px;max-height:calc(100dvh - 80px);overflow:auto}.top-actions .study-switch{margin-right:0}.actions .study-switch{margin-right:2px}}@media print{.study-switch{display:none!important}}
+
+.study-switch>summary::before,.study-switch>summary::after{content:none!important}.actions .quiet{white-space:nowrap}@media(max-width:1100px){.study-switch>summary{padding:8px;gap:0}.study-switch>summary span,.study-switch>summary i{display:none}}
+</style></head><body><a class="skip" href="#main">跳到正文</a>
+<svg class="symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+<symbol id="i-paper" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 12h7M9 16h7"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></symbol>
+<symbol id="i-nodes" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="16" y="16" width="6" height="6" rx="1"/><path d="M12 8v4M5 16v-4h14v4"/></symbol>
+<symbol id="i-loop" viewBox="0 0 24 24"><path d="M20 10a8 8 0 0 0-14-4L3 9m0-6v6h6M4 14a8 8 0 0 0 14 4l3-3m0 6v-6h-6"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+<symbol id="i-left" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol>
+<symbol id="i-right" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></symbol>
+<symbol id="i-tool" viewBox="0 0 24 24"><path d="M14 5a5 5 0 0 0-6 6L3 16a3 3 0 0 0 4 4l6-6a5 5 0 0 0 6-6l-4 3-3-3z"/></symbol>
+<symbol id="i-model" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 2v4m6-4v4M9 18v4m6-4v4M2 9h4m-4 6h4m12-6h4m-4 6h4M10 10h4v4h-4z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8zm-10 9 10 5 10-5M2 16l10 5 10-5"/></symbol>
+</defs></svg>
+<header class="topbar"><div class="brand"><span class="brandmark"><svg class="icon"><use href="#i-grid"/></svg></span><div><strong>DSH 架构解析</strong><small>从论文到行业选型</small></div></div><nav class="chapters" aria-label="研究章节"><button data-chapter="paper" aria-current="true">01 设计论文</button><button data-chapter="architecture">02 架构能力</button><button data-chapter="comparison">03 生态定位与框架对比</button></nav><div class="actions"><details class="study-switch"><summary aria-label="切换研究" title="切换研究"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>切换研究</span><i aria-hidden="true">⌄</i></summary><nav aria-label="两份研究导航"><a href="index.html" aria-label="研究导航：选择研究主题"><b>研究导航</b><small>选择研究主题</small></a><a href="agent-research.html#overview" aria-label="Agent 架构研究：技术全景与行业选型"><b>Agent 架构研究</b><small>技术全景与行业选型</small></a><a href="dsh-meeting.html#paper" aria-label="DSH 架构解析：设计理念与架构能力" aria-current="page"><b>DSH 架构解析</b><small>设计理念与架构能力</small><em>当前</em></a></nav></details><button class="quiet" id="reading" aria-pressed="false">阅读模式</button><button class="quiet" id="sources-open">资料依据 ↗</button></div></header>
+<main id="main">
+<section class="slide" id="paper" data-chapter="paper" data-title="设计出发点" aria-labelledby="title-paper">
+<p class="eyebrow"><span class="num">01</span> 设计论文 / 从一个架构问题开始</p>
+<h1 id="title-paper">DeepSeek Harness<br>设计理念与<em>架构解析</em></h1>
+<div class="lead-body"><div><div class="paper"><span>DSH 引用的基础论文 · 2026 年 8 月</span><h3>《面向时空可组合性的编程范式》</h3><p class="english">A Programming Paradigm for Spatiotemporal Composability<br>Yifan Shi · Wei Zhang · Tianyi Cui / 北京大学、DeepSeek</p></div><p class="statement">组件加入、移除或替换时，<br><strong>资源和依赖怎样跟着变化？</strong></p></div><div class="path"><div class="path-row"><svg class="icon"><use href="#i-paper"/></svg><div><h3>论文：组合原则</h3><p>定义动态组件组合的机制与条件</p></div></div><div class="connector">↓ 原则落地</div><div class="path-row"><svg class="icon"><use href="#i-nodes"/></svg><div><h3>Cordis：组件框架</h3><p>管理组件的依赖与生命周期</p></div></div><div class="connector">↓ 构建执行系统</div><div class="path-row featured"><svg class="icon"><use href="#i-loop"/></svg><div><h3>DSH：智能体执行支架</h3><p>DeepSeek Harness：围绕模型组织持续执行能力</p></div></div></div></div>
+<div class="takeaway"><svg class="icon"><use href="#i-arrow"/></svg><div>从软件组件的动态组合，理解 DSH 的设计出发点。<small>论文讨论组合机制；行业收益属于后续选型判断。</small></div><a class="source-link" href="https://arxiv.org/abs/2608.25512" target="_blank" rel="noopener noreferrer">论文 [1] ↗</a></div>
+</section>
+<section class="slide" id="composition" data-chapter="paper" data-title="时空可组合" hidden aria-labelledby="title-composition">
+<p class="eyebrow"><span class="num">02</span> 设计论文 / 两个维度</p><h2 id="title-composition">退得干净，<em>配合有序</em>。</h2><p class="lede">“时间”关注组件撤出后的清理；“空间”关注组件之间的依赖。</p>
+<div class="two-col"><article class="concept"><div class="concept-head"><span class="icon-box"><svg class="icon"><use href="#i-clock"/></svg></span><div><h3>时间可组合性</h3><p class="en">Temporal Composability</p></div></div><p>组件移除时，撤销它在受管理范围内留下的影响。</p><div class="demo"><div class="demo-top"><span>查询插件 <small>· 机制示意</small></span><button class="button" id="plugin-toggle" aria-pressed="true">卸载插件</button></div><div class="resources"><span class="resource">工具注册 × 1</span><span class="resource">监听器 × 1</span><span class="resource">连接 × 1</span></div><p class="demo-note" id="plugin-status" aria-live="polite">已挂载：示意资源共 3 项。</p></div></article><article class="concept"><div class="concept-head"><span class="icon-box"><svg class="icon"><use href="#i-nodes"/></svg></span><div><h3>空间可组合性</h3><p class="en">Spatial Composability</p></div></div><p>声明组件需要什么，依赖变化时协调启用与停用。</p><div class="demo"><div class="demo-top"><span>分析插件 → 依赖查询服务</span><button class="button" id="service-toggle" aria-pressed="true">移除服务</button></div><p class="status" id="dependency-status" aria-live="polite">查询服务可用 → 分析插件启用</p><p class="demo-note">行业场景示意，未连接真实服务。</p></div></article></div>
+<div class="mechanisms"><span><strong>可撤销效应（Revertible Effects）</strong>：为受管理的操作保留清理方式。</span><span><strong>响应式依赖要求（Reactive Coeffects）</strong>：依赖变化驱动组件状态变化。</span></div>
+<div class="takeaway"><svg class="icon"><use href="#i-arrow"/></svg><div>组合规则需要覆盖组件的加入、共存与撤出。<small>清理注册和资源，不等于撤销已经发送的邮件或业务写入；清理逻辑须由组件正确实现。</small></div><a class="source-link" href="https://arxiv.org/pdf/2608.25512" target="_blank" rel="noopener noreferrer">论文边界 [1] ↗</a></div>
+</section>
+<section class="slide" id="architecture" data-chapter="architecture" data-title="整个系统组件化" hidden aria-labelledby="title-architecture">
+<p class="eyebrow"><span class="num">03</span> 架构能力 / 论文原则进入执行系统</p><h2 id="title-architecture">连执行循环，<em>也是插件</em>。</h2><p class="lede">DSH 将模型、工具、会话和执行循环放入同一套组件机制。</p>
+<div class="arch-layout"><div class="arch-diagram"><div class="arch-entry"><svg class="icon"><use href="#i-layers"/></svg><span>网页界面 / 无界面任务 / 应用集成</span></div><div class="arch-line">↓ 通过配置组合执行系统</div><p class="interaction-hint arch-hint">点击组件，查看职责。</p><div class="plugin-grid"><button class="plugin-node" data-component="loop" aria-pressed="true"><svg class="icon"><use href="#i-loop"/></svg><strong>执行循环</strong><span>Agent Loop</span></button><button class="plugin-node" data-component="model" aria-pressed="false"><svg class="icon"><use href="#i-model"/></svg><strong>模型适配</strong><span>Model Adapter</span></button><button class="plugin-node" data-component="tools" aria-pressed="false"><svg class="icon"><use href="#i-tool"/></svg><strong>工具注册</strong><span>Tool Registry</span></button><button class="plugin-node" data-component="session" aria-pressed="false"><svg class="icon"><use href="#i-paper"/></svg><strong>会话日志</strong><span>Session Log</span></button></div><div class="context-bar"><strong>共享上下文（Context）</strong><span>组件查找服务、声明依赖、交换事件的公共入口</span></div><div class="cordis-bar"><span>Cordis 组件框架</span><small>依赖协调 · 注册清理 · 生命周期</small></div><div class="arch-external">↓ 能力接口连接模型服务、业务系统与执行环境</div></div><aside class="component-detail" aria-live="polite"><span class="label">当前组件</span><h3 id="component-title">执行循环</h3><p id="component-description">驱动“请求模型 → 调用工具 → 读取结果 → 继续判断”，直到本轮任务结束。</p><div class="detail-divider"></div><span class="label">架构意义</span><p id="component-meaning">循环本身可通过组件配置替换；修改执行方式有明确的架构入口。</p><span class="detail-tag">属于同一插件体系</span></aside></div>
+<div class="takeaway"><svg class="icon"><use href="#i-arrow"/></svg><div>DSH 的特点，是系统组件的统一组合方式。<small>图展示主要职责关系，省略了启动器、通信和具体插件树。</small></div><a class="source-link" href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md" target="_blank" rel="noopener noreferrer">架构 [3] ↗</a></div>
+</section>
+<section class="slide" id="capabilities" data-chapter="architecture" data-title="三个架构特点" hidden aria-labelledby="title-capabilities">
+<p class="eyebrow"><span class="num">04</span> 架构能力 / 怎样承接业务变化</p><h2 id="title-capabilities">组合、扩展、<em>追溯</em>。</h2><p class="lede">围绕三个架构特点，理解它对行业系统的潜在价值。</p>
+<div class="feature-grid"><article class="feature"><span class="feature-no">01</span><svg class="icon"><use href="#i-grid"/></svg><h3>通过配置组合</h3><p>配置组合方案（Profile）把插件包和覆盖配置组合成执行系统。</p><div class="feature-example"><span>行业判断</span>共用执行底座，按企业组合所需能力。</div></article><article class="feature"><span class="feature-no">02</span><svg class="icon"><use href="#i-nodes"/></svg><h3>通过接口与事件扩展</h3><p>能力接口支持替换实现；事件提供请求和工具执行的介入点。</p><div class="feature-example"><span>行业判断</span>数据接入、操作策略可有清晰的扩展位置。</div></article><article class="feature"><span class="feature-no">03</span><svg class="icon"><use href="#i-paper"/></svg><h3>从会话日志构建上下文</h3><p>模型看到的上下文由会话日志投影生成，请求可据此重建。</p><div class="feature-example"><span>行业判断</span>为过程追溯提供基础，业务审计仍需补充。</div></article></div>
+<div class="industry-strip"><strong>行业接入示例</strong><span>DSH 执行系统</span><b>→</b><span>问数工具插件</span><b>→</b><span>现有业务服务</span><small>权限、指标口径和业务规则由业务系统承担</small></div>
+<details><summary>补充边界：热更新、日志与成熟度</summary><p>热模块替换（Hot Module Replacement，HMR）是运行中重新加载配置或模块的机制。DSH 各启动组合的默认开关不同，不能据此承诺所有替换都无中断。会话日志不等同于任意故障下的任务持久执行；进程在记录完成前丢失，可能没有对应的持久流记录。官方当前仍标记为开发者预览。行业收益是研究判断，尚未完成业务集成验证。</p></details>
+<div class="takeaway"><svg class="icon"><use href="#i-arrow"/></svg><div>把变化接到明确的组件、接口与事件上。<small>架构机制与行业效果分开判断。</small></div><a class="source-link" href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md" target="_blank" rel="noopener noreferrer">架构 [3] ↗</a></div>
+</section>
+<section class="slide" id="classification" data-chapter="comparison" data-title="生态分类与协作" hidden aria-labelledby="title-classification">
+<p class="eyebrow"><span class="num">05</span> 生态地图 / 按主要技术职责定位</p>
+<div class="taxonomy-title"><h2 id="title-classification">先看生态，<em>再聚焦执行</em>。</h2><button class="quiet" data-open-inventory>项目归属表 ↗</button></div>
+<div class="eco-layout" id="ecosystem-map">
+  <div class="eco-figure">
+    <div class="eco-stage" aria-label="八类生态与主要协作关系">
+      <svg class="eco-links" aria-hidden="true"></svg>
+    </div>
+    <p class="eco-legend">框内：小类　箭头：职责间可组合关系　点击：查看项目</p>
+    <p class="sr-only">应用平台构建执行系统并交付应用；应用将任务交给执行系统并获取结果。执行系统使用模型、知识与工具；运行基础设施和观测治理支撑执行系统。箭头是职责关系示意，不代表所列项目已经集成，也不是固定执行顺序。</p>
+  </div>
+  <aside class="eco-detail" id="ecosystem-detail" aria-labelledby="eco-detail-title">
+    <span class="label">当前定位</span>
+    <h3 id="eco-detail-title">02 智能体构建与执行控制</h3>
+    <p id="eco-detail-purpose">定义任务，并组织模型、工具、状态和执行过程。</p>
+    <span class="label" id="eco-project-label">执行宿主代表</span>
+    <ul id="eco-detail-projects"></ul>
+    <p class="eco-boundary" id="eco-detail-boundary"></p>
+    <div class="eco-detail-actions"><button class="button primary" id="eco-focus-next" data-go="routes">展开五种路线 →</button><button class="button" id="eco-focus-back" hidden>回到②执行控制</button></div>
+  </aside>
+  <span class="sr-only" id="eco-announcement" aria-live="polite"></span>
+</div>
+<div class="takeaway"><svg class="icon"><use href="#i-arrow"/></svg><div>先定位职责，再在同一职责内比较项目。<small>研究分类按具体交付物归属；图示协作关系，项目实际集成另行验证。</small></div><button class="quiet sources-trigger">分类依据 ↗</button></div>
+</section>
+<section class="slide" id="routes" data-chapter="comparison" data-title="构建与执行的五种路线" hidden aria-labelledby="title-routes">
+<p class="eyebrow"><span class="num">06</span> 聚焦② / 构建与执行控制中的小类</p>
+<div class="taxonomy-title"><h2 id="title-routes">同一职责，<em>五种设计重心</em>。</h2><button class="quiet" data-go="classification">← 返回生态图</button></div>
+<div class="framework-routes" id="framework-routes"></div>
+<div class="route-scope"><strong>比较对象要一致</strong><span>这里比较 Pi、OpenCode 的执行与嵌入部分；成品助手在生态第⑧类记录。</span><button class="button" data-go="harness">比较 DSH / OpenCode / Pi →</button></div>
+<div class="takeaway"><svg class="icon"><use href="#i-arrow"/></svg><div>小类描述默认抽象与复用方式，功能可以重叠。<small>开发工具包（SDK）提供编程接口；执行支架（Harness）组织模型周围的任务执行机制。两者可同时存在。</small></div><button class="quiet" data-open-inventory>完整项目表 ↗</button></div>
+</section>
+<dialog id="inventory-dialog" aria-labelledby="inventory-title">
+<div class="dialog-head"><h2 id="inventory-title">项目归属与比较对象</h2><button class="quiet" id="inventory-close" aria-label="关闭项目归属表">关闭 ×</button></div>
+<p class="footnote">分类资料核对：2026-10-10。来源分为“原始研究”“研究补充”“生态示例”；项目品牌下的产品、执行内核与独立组件分别记录。<span class="interaction-hint">点击名称，查看官方资料。</span></p>
+<div class="table-wrap inventory-wrap"><table class="inventory-table"><caption class="sr-only">项目、主要职责类别、比较对象及原资料位置</caption><thead><tr><th scope="col">项目 / 交付物</th><th scope="col">主要职责类别</th><th scope="col">比较重点</th><th scope="col">来源范围</th></tr></thead><tbody id="project-inventory"></tbody></table></div>
+<details class="inventory-notes"><summary>原始研究分组与生态分类的对应关系</summary><div>Q5 的“核心与开发、任务与能力组织、生产运行、产品与平台化”是阅读分组；按主要技术职责分类。Q7 的应用内开发框架、持久工作流、执行支架主要在②比较，托管运行在⑤比较。Q1 的 OpenClaw、WorkBuddy 作为成品应用进入⑧。</div></details>
+<details class="inventory-notes"><summary>标准规范和通用工程依赖怎样记录？</summary><div>模型上下文协议（MCP）、Agent Skills 技能规范、JSON Schema 配置结构规范单独标注为标准；其具体实现才进入项目表。networknt json-schema-validator 是 Java 配置校验依赖，记录在行业配置方案中，非单独的智能体框架。问数插件和行业技能包是案例中的业务交付物。</div></details>
+</dialog>
+
+<section class="slide" id="harness" data-chapter="comparison" data-title="DSH、OpenCode、Pi" hidden aria-labelledby="title-harness">
+<p class="eyebrow"><span class="num">07</span> 同类对比 / 聚焦可复用执行系统</p><h2 id="title-harness">DSH、OpenCode、Pi，<em>怎么选</em>？</h2><p class="lede">比较三者的执行与嵌入部分：默认能力、组件组合与行业改造路径。</p>
+<div class="table-wrap"><table class="compare"><caption class="sr-only">三种智能体执行支架的设计重心与行业改造问题</caption><thead><tr><th scope="col">比较维度</th><th scope="col">Pi <span>精简与扩展</span></th><th scope="col">OpenCode <span>编程产品与执行系统</span></th><th scope="col" class="focus">DSH <span>系统组件组合</span></th></tr></thead><tbody><tr><th scope="row">设计出发点</th><td>保持核心精简，用扩展塑造工作方式</td><td>完整编程助手，开放插件和集成能力</td><td class="focus">执行系统各部分进入统一插件体系</td></tr><tr><th scope="row">定制入口</th><td>工具、事件、技能、扩展与嵌入接口</td><td>插件、配置、客户端与嵌入式开发工具包</td><td class="focus">组件配置、依赖声明、服务与事件</td></tr><tr><th scope="row">复用价值</th><td>从较小的核心出发，按需构建</td><td>复用现成会话、工具和交互能力</td><td class="focus">统一装配与替换执行系统组件</td></tr><tr><th scope="row">行业改造要问</th><td>还需补多少业务执行与治理能力？</td><td>编程场景的默认设计，需要改多少？</td><td class="focus">组件机制能否降低多版本维护成本？</td></tr></tbody></table></div>
+<details><summary>重要补充：插件与生命周期能力存在重叠</summary><div>OpenCode V2 官方文档包含插件卸载清理和嵌入式执行；Pi 具有扩展生命周期，其仓库还包含应用组合运行底座 Chord，用于服务依赖与资源管理。因此，这里比较的是主要定位与组合方式，未断言这些能力由 DSH 独占。OpenCode 的 V1 与 V2 应分版本验证；仓库主分支也不等同于已发布稳定版。</div></details>
+<div class="takeaway"><svg class="icon"><use href="#i-arrow"/></svg><div>DSH 值得验证的优势：统一组件体系对行业定制的适配性。<small>“精简”“产品完整”“系统组合”是观察重点，不是互斥能力，也不是性能排名。</small></div><button class="quiet sources-trigger">官方依据 ↗</button></div>
+</section>
+<section class="slide" id="decision" data-chapter="comparison" data-title="行业选型判断" hidden aria-labelledby="title-decision">
+<p class="eyebrow"><span class="num">08</span> 研究判断 / 给推荐一个可验证的理由</p><h2 id="title-decision">推荐 DSH，<br>验证它能否承接<em>长期变化</em>。</h2><p class="lede">当目标是多个行业、多个企业共用执行底座时，优先验证 DSH 的组件组合价值。</p>
+<div class="decision-grid"><div class="decision-main"><span class="label">我们要维护的变化</span><div class="change-row"><svg class="icon"><use href="#i-model"/></svg><strong>模型与执行环境</strong><span>部署条件、模型服务变化</span></div><div class="change-row"><svg class="icon"><use href="#i-tool"/></svg><strong>数据与业务工具</strong><span>接口、指标、企业适配变化</span></div><div class="change-row"><svg class="icon"><use href="#i-nodes"/></svg><strong>行业能力组合</strong><span>插件依赖、版本与能力集合变化</span></div></div><aside class="validation"><span class="label">用同一组业务任务验证</span><h3>比较真实改造成本</h3><p>接入一个查询工具 → 替换服务实现 → 切换企业配置 → 卸载扩展并检查资源。</p><p>再核验权限、失败恢复、升级兼容与维护工作量。</p><span class="detail-tag">DSH / OpenCode / Pi 同题验证</span></aside></div>
+<div class="takeaway"><svg class="icon"><use href="#i-check"/></svg><div>推荐依据：统一组件架构与行业复用需求相匹配。<small>这是待验证的选型判断；DSH 官方仍为开发者预览，本研究未完成框架性能或业务集成实测。</small></div><a class="source-link" href="https://github.com/deepseek-ai/deepseek-harness" target="_blank" rel="noopener noreferrer">项目状态 [2] ↗</a></div>
+</section>
+</main>
+<footer class="footer"><span class="foot-label" id="foot-label">设计出发点 · ← → 翻页</span><nav class="dots" aria-label="逐页导航"></nav><div class="pager"><button id="previous" aria-label="上一页"><svg class="icon"><use href="#i-left"/></svg></button><span class="counter" id="counter" aria-live="polite">01 / 08</span><button id="next" aria-label="下一页"><svg class="icon"><use href="#i-right"/></svg></button></div></footer>
+<dialog id="sources" aria-labelledby="sources-title"><div class="dialog-head"><h2 id="sources-title">资料依据与研究边界</h2><button class="quiet" id="sources-close" aria-label="关闭资料依据">关闭 ×</button></div><p class="footnote">论文与核心资料核对：2026-10-09；分类资料核对：2026-10-10。论文机制、官方实现与行业选型判断分别表述；示意交互不运行真实框架。在线文档会变化，工程选型需要固定版本验证。</p><ol>
+<li><a href="https://arxiv.org/abs/2608.25512" target="_blank" rel="noopener noreferrer">设计论文 · A Programming Paradigm for Spatiotemporal Composability</a><span>时空可组合性、机制和适用条件；系统边界见全文第 6.1 节，第 70—71 页。</span></li>
+<li><a href="https://github.com/deepseek-ai/deepseek-harness" target="_blank" rel="noopener noreferrer">DSH 官方仓库</a><span>论文关联、项目定位和开发者预览状态。</span></li>
+<li><a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md" target="_blank" rel="noopener noreferrer">DSH 架构说明</a><span>插件体系、配置组合、事件、会话日志与能力接口。</span></li>
+<li><a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md" target="_blank" rel="noopener noreferrer">Cordis 入门说明</a><span>共享上下文、依赖声明、事件和可清理的注册。</span></li>
+<li><a href="https://github.com/earendil-works/pi" target="_blank" rel="noopener noreferrer">Pi 官方仓库</a> · <a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md" target="_blank" rel="noopener noreferrer">扩展机制</a><span>精简、可扩展的定位；工具、事件、生命周期和应用集成。</span></li>
+<li><a href="https://github.com/earendil-works/pi/blob/main/packages/chord/README.md" target="_blank" rel="noopener noreferrer">Pi 仓库中的 Chord</a><span>独立的应用组合运行底座，具有依赖图、服务和资源清理机制；不据此推定每一版本的 Pi 都采用相同内部实现。</span></li>
+<li><a href="https://opencode.ai/v2/docs/build/plugins/" target="_blank" rel="noopener noreferrer">OpenCode V2 插件机制</a><span>插件、运行介入点、注册释放和卸载清理。</span></li>
+<li><a href="https://opencode.ai/v2/docs/build/sdk" target="_blank" rel="noopener noreferrer">OpenCode V2 嵌入式开发工具包</a><span>将执行系统嵌入应用，管理宿主与资源释放。版本差异须单独验证。</span></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/overview" target="_blank" rel="noopener noreferrer">LangChain 生态与 LangGraph</a><span>LangChain 的集成定位、LangGraph 的编排与持久执行，以及 Deep Agents 执行支架。</span></li>
+<li><a href="https://adk.dev/" target="_blank" rel="noopener noreferrer">Google ADK 官方文档</a><span>智能体开发、工作流、团队协作与运行工具；语言与版本能力须分别核对。</span></li>
+<li><a href="https://developers.openai.com/api/docs/guides/agents/sdk" target="_blank" rel="noopener noreferrer">OpenAI Agents SDK 官方文档</a><span>在应用中运行智能体循环，组织工具、任务移交和会话。与普通模型接口调用库 OpenAI SDK 区分，在②“智能体构建与执行控制”的通用开发路线中比较。</span></li>
+<li><a href="https://docs.dify.ai/en/home" target="_blank" rel="noopener noreferrer">Dify 官方文档</a><span>应用搭建、知识接入、发布和管理能力。</span></li>
+<li><a href="https://docs.flowiseai.com/" target="_blank" rel="noopener noreferrer">Flowise 官方文档</a><span>可视化智能体与工作流搭建，提供追踪、评估和应用集成等能力。</span></li>
+<li>原始研究：技术架构地图与行业智能体系统技术选型备忘录<span>Q1：成品助手；Q5：四组、八方向的生态观察；Q7：四条运行路线；Q10 与第四部分：行业技术选型。按主要技术职责划分八类生态，再展开五种构建与执行路线。原分组对应与项目来源见“项目归属表”；这是研究口径，不是官方统一标准。</span></li>
+<li><a href="https://docs.langchain4j.dev/tutorials/ai-services/" target="_blank" rel="noopener noreferrer">LangChain4j 官方文档</a><span>Java 模型接入、函数工具与应用集成。</span></li>
+<li><a href="https://learn.microsoft.com/agent-framework/overview" target="_blank" rel="noopener noreferrer">Microsoft Agent Framework</a> · <a href="https://learn.microsoft.com/agent-framework/agents/harness" target="_blank" rel="noopener noreferrer">Harness 组件</a><span>基础智能体、工作流与预置支架按具体组件比较；托管服务单列于⑤。</span></li>
+</ol><p class="footnote">生态示例与托管服务的官方链接见项目归属表。尚未开展框架性能评测；论文的形式化结果不能替代工程实测。</p></dialog>
+<script>(() => {
+'use strict';
+const slides = [...document.querySelectorAll('.slide')];
+const dots = document.querySelector('.dots');
+const previous = document.querySelector('#previous');
+const next = document.querySelector('#next');
+let index = 0;
+let reading = false;
+slides.forEach((slide, i) => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.setAttribute('aria-label', `第 ${i+1} 页：${slide.dataset.title}`);
+  button.addEventListener('click', () => go(i));
+  dots.append(button);
+});
+function go(target, updateHash = true) {
+  index = Math.max(0, Math.min(slides.length-1, target));
+  slides.forEach((slide, i) => { slide.hidden = !reading && i !== index; });
+  [...dots.children].forEach((button, i) => button.setAttribute('aria-current', String(i === index)));
+  document.querySelectorAll('[data-chapter]').forEach(button => {
+    if (button.tagName === 'BUTTON') button.setAttribute('aria-current', String(button.dataset.chapter === slides[index].dataset.chapter));
+  });
+  document.querySelector('#counter').textContent = `${String(index+1).padStart(2,'0')} / ${String(slides.length).padStart(2,'0')}`;
+  document.querySelector('#foot-label').textContent = `${slides[index].dataset.title} · ← → 翻页`;
+  previous.disabled = index === 0;
+  next.disabled = index === slides.length-1;
+  if (updateHash && location.hash !== `#${slides[index].id}`) history.replaceState(null, '', `#${slides[index].id}`);
+  if (reading) slides[index].scrollIntoView({behavior:'instant', block:'start'});
+  else window.scrollTo({top:0, behavior:'instant'});
+  window.dispatchEvent(new Event('meeting-slide-change'));
+}
+previous.addEventListener('click', () => go(index-1));
+next.addEventListener('click', () => go(index+1));
+document.querySelectorAll('.chapters button').forEach(button => button.addEventListener('click', () => go(slides.findIndex(slide => slide.dataset.chapter === button.dataset.chapter))));
+document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => go(slides.findIndex(slide => slide.id === button.dataset.go))));
+document.querySelector('#reading').addEventListener('click', event => {
+  reading = !reading;
+  document.body.classList.toggle('reading', reading);
+  event.currentTarget.setAttribute('aria-pressed', String(reading));
+  event.currentTarget.textContent = reading ? '逐页模式' : '阅读模式';
+  go(index);
+});
+const dialog = document.querySelector('#sources');
+document.querySelector('#sources-open').addEventListener('click', () => dialog.showModal());
+document.querySelector('#sources-close').addEventListener('click', () => dialog.close());
+dialog.addEventListener('click', event => { if (event.target === dialog) { const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close(); } });
+document.addEventListener('keydown', event => {
+  if (document.querySelector('dialog[open]') || event.altKey || event.ctrlKey || event.metaKey || /INPUT|TEXTAREA|SELECT/.test(event.target.tagName) || event.target.closest('.study-switch')) return;
+  if (event.key === 'ArrowRight' || event.key === 'PageDown') { event.preventDefault(); go(index+1); }
+  if (event.key === 'ArrowLeft' || event.key === 'PageUp') { event.preventDefault(); go(index-1); }
+  if (event.key === 'Home') { event.preventDefault(); go(0); }
+  if (event.key === 'End') { event.preventDefault(); go(slides.length-1); }
+});
+function hashNavigation() { const target = slides.findIndex(slide => `#${slide.id}` === location.hash); go(target < 0 ? 0 : target, false); }
+window.addEventListener('hashchange', hashNavigation);
+let mounted = true;
+document.querySelector('#plugin-toggle').addEventListener('click', event => {
+  mounted = !mounted;
+  event.currentTarget.textContent = mounted ? '卸载插件' : '挂载插件';
+  event.currentTarget.setAttribute('aria-pressed', String(mounted));
+  document.querySelectorAll('.resource').forEach(item => item.classList.toggle('off', !mounted));
+  document.querySelector('#plugin-status').textContent = mounted ? '已挂载：示意资源共 3 项。' : '已卸载：工具注册、监听器与连接均已清理，剩余 0 项。';
+});
+let service = true;
+document.querySelector('#service-toggle').addEventListener('click', event => {
+  service = !service;
+  event.currentTarget.textContent = service ? '移除服务' : '恢复服务';
+  event.currentTarget.setAttribute('aria-pressed', String(service));
+  const status = document.querySelector('#dependency-status');
+  status.textContent = service ? '查询服务可用 → 分析插件启用' : '查询服务缺失 → 分析插件等待依赖';
+  status.classList.toggle('wait', !service);
+});
+document.querySelectorAll('.sources-trigger').forEach(button => button.addEventListener('click', () => dialog.showModal()));
+const components = {
+  loop: ['执行循环','驱动“请求模型 → 调用工具 → 读取结果 → 继续判断”，直到本轮任务结束。','循环本身可通过组件配置替换；修改执行方式有明确的架构入口。'],
+  model: ['模型适配','将具体模型服务接入统一的消息与流式响应接口。','模型服务与执行逻辑之间有适配边界；新模型的具体能力仍须核验。'],
+  tools: ['工具注册','管理当前可用工具，并组织带有执行前后介入点的调用过程。','将业务能力作为工具接入；权限和业务规则需要通过具体策略与服务落实。'],
+  session: ['会话日志','记录执行事实，并从日志构建模型所见的消息历史。','为上下文重建与过程追溯提供基础；业务审计与故障恢复仍需专项验证。']
+};
+document.querySelectorAll('[data-component]').forEach(button => button.addEventListener('click', () => {
+  document.querySelectorAll('[data-component]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+  const [title, description, meaning] = components[button.dataset.component];
+  document.querySelector('#component-title').textContent = title;
+  document.querySelector('#component-description').textContent = description;
+  document.querySelector('#component-meaning').textContent = meaning;
+}));
+hashNavigation();
+})();
+
+(() => {
+'use strict';
+const item = (name, role, source, url, origin = '研究补充') => ({name, role, source, url, origin});
+const groups = [
+  {id:'integration', title:'模型接入与应用集成', icon:'i-model', question:'在已有业务中接入模型', choice:'业务代码继续掌握执行流程。', projects:[item('LangChain4j','Java 模型接入、结构化输出与函数工具','原文 Q10','https://docs.langchain4j.dev/tutorials/ai-services/','原始研究')]},
+  {id:'development', title:'通用智能体开发', icon:'i-tool', question:'用开发抽象组织智能体', choice:'按业务需要定义智能体、工具与协作。', projects:[item('LangChain','模型、工具与可配置执行抽象','研究补充','https://docs.langchain.com/oss/python/langchain/overview'),item('Google ADK','智能体开发工具包；工具、协作与工作流','原文 Q5 / Q7 / Q10','https://adk.dev/','原始研究'),item('OpenAI Agents SDK','智能体开发工具包；循环、会话与任务移交','原文 Q5 / Q7 / Q10','https://developers.openai.com/api/docs/guides/agents/sdk','原始研究'),item('Microsoft Agent Framework','智能体开发框架；此处比较基础智能体抽象','原文 Q5 / Q7','https://learn.microsoft.com/agent-framework/','原始研究')]},
+  {id:'workflow', title:'状态与流程编排', icon:'i-nodes', question:'显式控制步骤、状态与恢复', choice:'当复杂度集中在流程与状态时优先比较。', projects:[item('LangGraph','状态图、持久执行与人工介入','原文 Q7 / Q10','https://docs.langchain.com/oss/python/langgraph/overview','原始研究'),item('Microsoft Agent Framework · Workflow','框架内的工作流组件','原文 Q7','https://learn.microsoft.com/agent-framework/overview','原始研究')]},
+  {id:'harness-library', title:'预置执行支架', icon:'i-loop', question:'复用已组合好的任务执行能力', choice:'在现成执行机制上配置与扩展。', projects:[item('Deep Agents','执行库；预置上下文、文件与委派能力','研究补充','https://docs.langchain.com/oss/python/deepagents/overview'),item('Microsoft Agent Harness','Agent Framework 内的预置执行支架组件','原文 Q7','https://learn.microsoft.com/agent-framework/agents/harness','原始研究')]},
+  {id:'host', title:'可扩展执行宿主', icon:'i-layers', question:'复用执行系统，继续做行业定制', choice:'下一页比较组件组合、默认能力与改造成本。', projects:[item('DSH','执行系统；统一组件组合','原文 Q7 / Q10 / 第四部分','https://github.com/deepseek-ai/deepseek-harness','原始研究'),item('Pi · 执行与嵌入','比较可复用执行部分，非成品界面','研究补充','https://github.com/earendil-works/pi'),item('OpenCode · 执行与嵌入','此处比较 V2 执行与嵌入式接口','研究补充','https://opencode.ai/v2/docs/build/sdk')]}
+];
+const categories = [
+  {id:'model',number:'01',title:'模型与推理',subtypes:['模型与模型服务','推理引擎'],purpose:'提供语言理解、推理和生成能力。',boundary:'比较模型或推理服务本身；应用如何组织任务由②负责。',projects:[item('vLLM','推理引擎','生态示例','https://docs.vllm.ai/en/latest/','生态示例'),item('Ollama','模型运行与服务','生态示例','https://docs.ollama.com/','生态示例')]},
+  {id:'control',number:'02',title:'智能体构建与执行控制',subtypes:['模型接入','通用开发','状态编排','预置支架','执行宿主'],purpose:'定义任务，并组织模型、工具、状态和执行过程。',boundary:'开发框架与执行系统在此比较任务控制方式；运行环境在⑤比较。',projects:groups.flatMap(group=>group.projects),preview:groups.find(group=>group.id==='host').projects},
+  {id:'knowledge',number:'03',title:'知识、检索与记忆',subtypes:['索引与检索','长期记忆'],purpose:'组织、检索和保留任务需要的信息。',boundary:'此处比较信息管理能力；工具接口只负责让它可被调用。',projects:[item('LlamaIndex · 检索组件','比较索引与检索部分','生态示例','https://developers.llamaindex.ai/python/framework/','生态示例'),item('Mem0','长期记忆','生态示例','https://docs.mem0.ai/features/contextual-add','生态示例')]},
+  {id:'tools',number:'04',title:'工具连接与能力复用',subtypes:['工具与连接协议实现','技能与插件包'],purpose:'让外部业务能力可被发现、调用和复用。',boundary:'模型上下文协议（MCP）是连接规范；开发包和工具服务是具体实现。',projects:[item('MCP TypeScript SDK','模型上下文协议开发包；构建客户端与工具服务','生态示例','https://github.com/modelcontextprotocol/typescript-sdk','生态示例')],extra:'问数插件、行业技能属于案例中的业务能力包。'},
+  {id:'runtime',number:'05',title:'运行环境与基础设施',subtypes:['组件组合运行时','执行沙箱与托管服务'],purpose:'管理组件生命周期、动作隔离环境和部署资源。',boundary:'LangGraph 的任务状态控制在②；组件运行时、动作沙箱、云托管分别比较。',projects:[item('Cordis','组件组合运行时；DSH 使用的插件框架','DSH 架构资料','https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md'),item('Chord','组件组合运行时；Pi 仓库中的独立包','Pi 架构资料','https://github.com/earendil-works/pi/blob/main/packages/chord/README.md'),item('E2B','动作执行沙箱','生态示例','https://e2b.dev/ai-agents/databerry','生态示例'),item('AWS Bedrock AgentCore Runtime','云端托管运行服务','原文 Q7','https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.html','原始研究'),item('Google Agent Runtime / Agent Engine','云端托管运行；名称沿用原始资料，官方名称有演进','原文 Q7','https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime','原始研究'),item('Microsoft Foundry Hosted Agents','云端托管运行服务','原文 Q7','https://learn.microsoft.com/agent-framework/hosting/','原始研究')]},
+  {id:'governance',number:'06',title:'观测、评估与安全治理',subtypes:['执行追踪与效果评估','权限与策略控制'],purpose:'追踪执行、评估质量，并实施权限和风险策略。',boundary:'这里比较专门的观测或治理系统；框架自带日志记作其能力。',projects:[item('Langfuse','观测与评估平台','生态示例','https://langfuse.com/docs','生态示例'),item('LangSmith','此处比较追踪、调试与评估部分','生态示例','https://docs.langchain.com/oss/python/langchain/overview','生态示例')],extra:'权限、审计与强制业务规则仍需确定具体承载系统。'},
+  {id:'platform',number:'07',title:'应用搭建与管理平台',subtypes:['可视化搭建','应用发布与管理'],purpose:'为创建、发布和管理智能体应用提供工作台。',boundary:'平台可以内置执行、知识和治理能力，主归属按工作台定位记录。',projects:[item('Dify','可视化应用搭建与管理','研究补充','https://docs.dify.ai/en/home'),item('Flowise','可视化智能体与工作流搭建','研究补充','https://docs.flowiseai.com/')]},
+  {id:'product',number:'08',title:'成品智能体应用',subtypes:['编程助手','个人、办公与行业助手'],purpose:'直接帮助最终用户完成某类任务。',boundary:'此处比较产品形态；OpenCode 和 Pi 的执行与嵌入部分在②单独比较。',projects:[item('OpenCode · 编程助手','成品编程应用','研究补充','https://opencode.ai/'),item('Pi · 编程助手','成品编程应用','研究补充','https://github.com/earendil-works/pi'),item('OpenClaw','个人助手产品','原文 Q1','https://docs.openclaw.ai/','原始研究'),item('WorkBuddy','办公助手产品；定位沿用原文 Q1','原文 Q1',null,'原始研究')]}
+];
+const relations = [
+  {from:'platform',to:'product',label:'交付应用',kind:'publish'},
+  {from:'platform',to:'control',label:'构建 / 配置',kind:'build'},
+  {from:'product',to:'control',label:'任务 / 结果',kind:'request',both:true},
+  {from:'control',to:'model',label:'推理',kind:'model'},
+  {from:'control',to:'knowledge',label:'检索 / 记忆',kind:'knowledge'},
+  {from:'control',to:'tools',label:'调用',kind:'tools'},
+  {from:'runtime',to:'control',label:'运行支撑',kind:'runtime'},
+  {from:'governance',to:'control',label:'追踪 / 评估 / 约束',kind:'governance'}
+];
+const map = document.querySelector('#ecosystem-map');
+const stage = map.querySelector('.eco-stage');
+const svg = map.querySelector('.eco-links');
+const nodeById = Object.fromEntries(categories.map(category=>[category.id,category]));
+let selected = 'control';
+let queued = false;
+function projectName(project, className) {
+  const el = document.createElement(project.url?'a':'strong');
+  el.textContent = project.name;
+  el.className = className;
+  if(project.url){el.href=project.url;el.target='_blank';el.rel='noopener noreferrer';}
+  return el;
+}
+categories.forEach(category=>{
+  const button = document.createElement('button');
+  button.type='button';button.className='eco-node';button.dataset.ecoNode=category.id;
+  button.setAttribute('aria-controls','ecosystem-detail');button.setAttribute('aria-pressed','false');
+  const title = document.createElement('strong');title.textContent=`${category.number} ${category.title}`;
+  const small = document.createElement('span');small.textContent=category.subtypes.join(' · ');
+  button.append(title,small);stage.append(button);
+  button.addEventListener('click',()=>selectCategory(category.id));
+});
+function selectCategory(id) {
+  const category=nodeById[id];if(!category)return;
+  selected=id;
+  stage.querySelectorAll('[data-eco-node]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.ecoNode===id)));
+  document.querySelector('#eco-detail-title').textContent=`${category.number} ${category.title}`;
+  document.querySelector('#eco-detail-purpose').textContent=category.purpose;
+  document.querySelector('#eco-detail-boundary').textContent=category.boundary+(category.extra?' '+category.extra:'');
+  const list=document.querySelector('#eco-detail-projects');list.replaceChildren();
+  const preview=category.preview||(id==='runtime'?[category.projects[0],category.projects[2],category.projects[3]]:category.projects);
+  preview.forEach(project=>{
+    const row=document.createElement('li');row.append(projectName(project,'eco-project-name'));
+    const description=document.createElement('span');description.textContent=project.role;row.append(description);list.append(row);
+  });
+  document.querySelector('#eco-project-label').textContent=id==='control'?'执行宿主代表':id==='runtime'?`代表对象 · 全部 ${category.projects.length} 项见项目归属表`:'代表项目 / 比较对象';
+  const onward=document.querySelector('#eco-focus-next');onward.hidden=id!=='control';
+  document.querySelector('#eco-focus-back').hidden=id==='control';
+  map.querySelector('#eco-announcement').textContent=`已选择${category.title}，代表项目已更新。`;
+  scheduleDraw();
+}
+document.querySelector('#eco-focus-back').addEventListener('click',()=>selectCategory('control'));
+const namespace='http://www.w3.org/2000/svg';
+const svgEl=(tag,attrs,text)=>{const el=document.createElementNS(namespace,tag);Object.entries(attrs||{}).forEach(([key,value])=>el.setAttribute(key,String(value)));if(text!==undefined)el.textContent=text;return el;};
+function draw() {
+  queued=false;
+  if(stage.getBoundingClientRect().width===0)return;
+  const outer=stage.getBoundingClientRect(),width=stage.clientWidth,height=stage.clientHeight;
+  const boxes={};stage.querySelectorAll('[data-eco-node]').forEach(el=>{const b=el.getBoundingClientRect();boxes[el.dataset.ecoNode]={x:b.left-outer.left,y:b.top-outer.top,w:b.width,h:b.height,cx:b.left-outer.left+b.width/2,cy:b.top-outer.top+b.height/2};});
+  svg.setAttribute('viewBox',`0 0 ${width} ${height}`);svg.replaceChildren();
+  const defs=svgEl('defs');['active','quiet'].forEach(state=>{const marker=svgEl('marker',{id:`meeting-eco-arrow-${state}`,viewBox:'0 0 8 8',refX:7,refY:4,markerWidth:7,markerHeight:7,orient:'auto-start-reverse'});marker.append(svgEl('path',{d:'M 1 1 L 7 4 L 1 7',fill:'none',stroke:state==='active'?'var(--blue)':'#adb9cf','stroke-width':1.2}));defs.append(marker);});svg.append(defs);
+  const edges=svgEl('g'),labels=svgEl('g');svg.append(edges,labels);
+  const mobile=getComputedStyle(stage).gridTemplateColumns.trim().split(/\s+/).length===1;
+  relations.forEach(r=>{
+    const a=boxes[r.from],b=boxes[r.to],active=r.from===selected||r.to===selected;
+    let path,lx,ly,rotation=0;
+    if(mobile){
+      const adjacent=(r.from==='platform'&&r.to==='product')||(r.from==='product'&&r.to==='control')||(r.from==='control'&&r.to==='model');
+      if(adjacent){path=`M ${a.cx} ${a.y+a.h} V ${b.y}`;lx=a.cx;ly=(a.y+a.h+b.y)/2;}
+      else{const left=['build','knowledge','runtime'].includes(r.kind),rail=left?8+(r.kind==='knowledge'?8:0):width-8-(r.kind==='tools'?8:0),sy=a.cy+(r.kind==='knowledge'?10:0),ey=b.cy+(r.kind==='knowledge'?10:0);path=`M ${left?a.x:a.x+a.w} ${sy} H ${rail} V ${ey} H ${left?b.x:b.x+b.w}`;lx=rail;ly=(sy+ey)/2;rotation=-90;}
+    }else if(r.kind==='publish'){path=`M ${a.cx} ${a.y} V 9 H ${b.cx} V ${b.y}`;lx=(a.cx+b.cx)/2;ly=9;}
+    else if(['build','request'].includes(r.kind)){const x=b.x+b.w*(r.kind==='build'?.2:.8),y=(a.y+a.h+b.y)/2;path=`M ${a.cx} ${a.y+a.h} V ${y} H ${x} V ${b.y}`;lx=(a.cx+x)/2;ly=y;}
+    else if(['model','knowledge','tools'].includes(r.kind)){const x=a.x+a.w*({model:.15,knowledge:.5,tools:.85}[r.kind]),y=(a.y+a.h+b.y)/2;path=`M ${x} ${a.y+a.h} V ${y} H ${b.cx} V ${b.y}`;lx=(x+b.cx)/2;ly=y;}
+    else{const left=r.kind==='runtime',rail=left?8:width-8;path=`M ${left?a.x:a.x+a.w} ${a.cy} H ${rail} V ${b.cy} H ${left?b.x:b.x+b.w}`;lx=rail;ly=(a.cy+b.cy)/2;rotation=-90;}
+    const marker=`url(#meeting-eco-arrow-${active?'active':'quiet'})`,edge=svgEl('path',{d:path,fill:'none',stroke:active?'var(--blue)':'#adb9cf','stroke-width':active?1.6:1.1,'marker-end':marker});if(r.both)edge.setAttribute('marker-start',marker);edges.append(edge);
+    if(!mobile||active||['publish','request','model'].includes(r.kind)){const group=svgEl('g',{transform:`translate(${lx} ${ly}) rotate(${rotation})`}),label=svgEl('text',{'text-anchor':'middle','dominant-baseline':'central',fill:'var(--ink)'},r.label);group.append(label);labels.append(group);const box=label.getBBox();group.insertBefore(svgEl('rect',{x:box.x-3,y:box.y-1,width:box.width+6,height:box.height+2,fill:'var(--paper)'}),label);}
+  });
+}
+function scheduleDraw(){if(queued)return;queued=true;requestAnimationFrame(draw);}
+new ResizeObserver(scheduleDraw).observe(stage);
+window.addEventListener('meeting-slide-change',scheduleDraw);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(scheduleDraw);
+const cards=document.querySelector('#framework-routes');
+groups.forEach((group,i)=>{
+  const card=document.createElement('article');card.className=`route-card${group.id==='host'?' route-card-host':''}`;
+  const title=document.createElement('h3');title.textContent=`${String(i+1).padStart(2,'0')} ${group.title}`;
+  const question=document.createElement('p');question.textContent=group.question;
+  const list=document.createElement('ul');
+  group.projects.forEach(project=>{const row=document.createElement('li');row.append(projectName(project,'route-project-name'));list.append(row);});
+  const choice=document.createElement('small');choice.textContent=group.choice;
+  const icon=svgEl('svg',{class:'icon','aria-hidden':'true'});icon.append(svgEl('use',{href:`#${group.icon}`}));
+  card.append(icon,title,question,list,choice);cards.append(card);
+});
+const inventory=document.querySelector('#project-inventory');
+categories.forEach(category=>{
+  category.projects.forEach(project=>{
+    const row=document.createElement('tr'),name=document.createElement('th'),position=document.createElement('td'),role=document.createElement('td'),source=document.createElement('td');
+    name.scope='row';name.append(projectName(project,'inventory-name'));position.textContent=`${category.number} ${category.title}`;role.textContent=project.role;source.textContent=project.origin===project.source?project.origin:`${project.origin} · ${project.source}`;row.append(name,position,role,source);inventory.append(row);
+  });
+});
+const inventoryDialog=document.querySelector('#inventory-dialog');
+document.querySelectorAll('[data-open-inventory]').forEach(button=>button.addEventListener('click',()=>inventoryDialog.showModal()));
+document.querySelector('#inventory-close').addEventListener('click',()=>inventoryDialog.close());
+selectCategory('control');
+})();
+
+(()=>{const menus=[...document.querySelectorAll('.study-switch')];document.addEventListener('pointerdown',e=>menus.forEach(menu=>{if(!menu.contains(e.target))menu.open=false;}));document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const menu=menus.find(x=>x.open);if(!menu)return;e.preventDefault();e.stopPropagation();menu.open=false;menu.querySelector('summary').focus();},true);})();
+</script></body></html>

@@ -1,0 +1,36 @@
+# Installed dependencies and local caches
+node_modules/
+__pycache__/
+*.py[cod]
+.cache/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+
+# OS files, logs, and temporary files
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log
+*.tmp
+*.bak
+*~
+
+# Local production screenshots; keep the README illustration
+/research-share/preview*.png
+!/research-share/preview-navigation.png
+/research-share/meeting/preview*.png
+
+# Duplicate offline snapshots and internal production records
+/research-share/*.zip
+/research-share/验收记录.md
+/research-share/meeting/验收记录.md
+
+# research-share/dist/ is intentionally committed for offline reading.
+!/research-share/dist/
+!/research-share/dist/*.html
+!/research-share/dist/阅读说明.txt

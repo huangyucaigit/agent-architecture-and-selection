@@ -1,0 +1,15 @@
+{
+  "name": "agent-architecture-and-selection",
+  "private": true,
+  "description": "Interactive research on agent architecture, technical selection, and DeepSeek Harness.",
+  "scripts": {
+    "build": "node research-share/build.mjs",
+    "check": "python research-share/validate.py"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "marked": "17.0.5"
+  }
+}
