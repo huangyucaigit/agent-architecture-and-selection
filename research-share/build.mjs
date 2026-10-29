@@ -31,6 +31,7 @@ fs.writeFileSync(path.join(here, 'dist/agent-research.html'), html);
 console.log(`Generated research-share/dist/agent-research.html (${Buffer.byteLength(html).toLocaleString()} bytes)`);
 
 await import('./meeting/build.mjs');
+await import('./enterprise/build.mjs');
 const legacyIds=[...body.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]);
 const redirect='(()=>{const ids=new Set('+JSON.stringify(legacyIds)+');function redirectLegacy(){let id;try{id=decodeURIComponent(location.hash.slice(1));}catch{return;}if(ids.has(id)){const target=new URL("agent-research.html",location.href);target.hash=location.hash;location.replace(target.href);}}redirectLegacy();addEventListener("hashchange",redirectLegacy);})();';
 const portal=read('portal.html').replace('<!-- PORTAL_STYLE -->',read('portal.css')).replace('<!-- LEGACY_REDIRECT -->',redirect);

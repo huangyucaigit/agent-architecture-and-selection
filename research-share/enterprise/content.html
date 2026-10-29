@@ -1,0 +1,139 @@
+<a class="skip" href="#main">跳到正文</a>
+<svg class="symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8Zm-10 9 10 5 10-5M2 16l10 5 10-5"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9S4 17 4 12V6zM8 12l3 3 5-6"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></symbol>
+<symbol id="i-loop" viewBox="0 0 24 24"><path d="M20 10A8 8 0 0 0 6 6L3 9m0-6v6h6M4 14a8 8 0 0 0 14 4l3-3m0 6v-6h-6"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5C8 2 4 3 2 4v16c4-2 7-1 10 1 3-2 6-3 10-1V4c-2-1-6-2-10 1Zm0 0v16"/></symbol>
+<symbol id="i-data" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v7c0 4 18 4 18 0V5M3 12v7c0 4 18 4 18 0v-7"/></symbol>
+<symbol id="i-action" viewBox="0 0 24 24"><path d="M9 4H4v16h16v-5M14 3h7v7M9 15 21 3"/></symbol>
+<symbol id="i-left" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol><symbol id="i-right" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></symbol>
+</defs></svg>
+<header class="topbar">
+ <a class="brand" href="index.html"><span class="brandmark"><svg class="icon"><use href="#i-layers"/></svg></span><span>企业 Agent 集成设计<small>身份入口 · 通用执行 · 能力接入</small></span></a>
+ <nav class="chapters" aria-label="设计章节">
+  <button data-chapter="architecture" aria-current="true"><span class="chapter-name">01 总体架构</span><small class="chapter-count">共 2 页</small></button>
+  <button data-chapter="integration"><span class="chapter-name">02 身份与能力</span><small class="chapter-count">共 3 页</small></button>
+  <button data-chapter="decisions"><span class="chapter-name">03 决策与演进</span><small class="chapter-count">共 3 页</small></button>
+ </nav>
+ <div class="actions"><!-- STUDY_SWITCH --><button class="quiet" id="reading" aria-pressed="false">阅读模式</button><button class="quiet" id="sources-open">设计原文</button></div>
+</header>
+<div class="chapter-navigation"><p id="chapter-progress" class="chapter-progress" aria-live="polite">总体架构 · 第 1 / 2 页</p><nav id="chapter-pages" class="chapter-pages" aria-label="总体架构的页面"></nav></div>
+<main id="main" tabindex="-1">
+<section class="slide cover" id="overview" data-chapter="architecture" data-title="设计目标" aria-labelledby="title-overview">
+ <div class="cover-copy"><p class="eyebrow">01 / 企业能力的统一接入</p><h1 id="title-overview">企业 Agent 集成架构<br>与 <em>MCP 能力接入体系</em></h1><p class="lede">复用企业已有身份、权限与业务能力，<br class="desktop-break">让通用执行底座连接多个系统与行业。</p><p class="definition">智能体（Agent）根据任务调用工具、推进执行；模型上下文协议（Model Context Protocol，MCP）为连接工具与资源提供统一接口。</p><div class="cover-tags"><span>复用已有体系</span><span>保持执行通用</span><span>能力按需扩展</span></div></div>
+ <div class="cover-diagram" aria-label="身份入口、通用执行、能力出口的三段分工">
+  <div class="cover-question"><svg class="icon"><use href="#i-user"/></svg><div><small>谁进入，能用什么？</small><strong>人工智能网关（AI Gateway）</strong><p>人工智能网关：接入企业身份与能力授权</p></div></div><span class="cover-connector" aria-hidden="true">↓</span>
+  <div class="cover-question runtime"><svg class="icon"><use href="#i-loop"/></svg><div><small>怎样完成任务？</small><strong>智能体运行时（DSH Runtime）</strong><p>DeepSeek Harness：组织模型、工具与会话</p></div></div><span class="cover-connector" aria-hidden="true">↓</span>
+  <div class="cover-question"><svg class="icon"><use href="#i-shield"/></svg><div><small>怎样受控地使用企业能力？</small><strong>能力网关（MCP Gateway）</strong><p>MCP 网关：统一工具接入、校验与调用治理</p></div></div>
+ </div>
+ <div class="takeaway"><strong>企业体系继续提供身份与业务能力，执行底座保持通用。</strong><small>设计依据：原始备忘录 §1、§2、§7。智慧粮库是可选验证场景，架构面向多行业、多系统。</small></div>
+</section>
+
+<section class="slide" id="architecture" data-chapter="architecture" data-title="目标架构图" hidden aria-labelledby="title-architecture">
+ <p class="eyebrow">02 / 目标架构</p><h2 id="title-architecture">一条调用链，<em>两个网关边界。</em></h2><p class="lede">箭头表示请求方向，结果沿调用链返回。网关是本设计中的逻辑角色，具体产品与部署方式尚未确定。</p>
+ <div class="architecture-layout">
+  <figure class="architecture-map" aria-label="企业身份进入AI网关，经DSH执行和MCP网关接入三类企业能力">
+   <div class="enterprise-origin"><span><svg class="icon"><use href="#i-user"/></svg>企业用户＋现有身份体系</span><small>已有基础：组织 · 角色 · 数据权限</small></div>
+   <div class="origin-arrow" aria-hidden="true">↓ <span>认证与身份转换</span></div>
+   <div class="architecture-core">
+    <button class="arch-node" data-architecture="ai" aria-pressed="true"><span class="node-kicker">身份入口</span><strong>AI Gateway</strong><small>认证 · 能力授权 · 会话初始化</small></button>
+    <button class="arch-node runtime" data-architecture="dsh" aria-pressed="false"><span class="node-kicker">通用执行</span><strong>DSH Runtime</strong><small>任务推进 · 工具调用 · 会话管理</small></button>
+    <button class="arch-node gateway" data-architecture="mcp" aria-pressed="false"><span class="node-kicker">能力安全出口</span><strong>MCP Gateway</strong><small>校验 · 工具权限 · 审计限流</small></button>
+   </div>
+   <div class="branch-label">MCP 网关路由到对应能力服务</div>
+   <svg class="branch-lines" viewBox="0 0 900 34" preserveAspectRatio="none" aria-hidden="true"><path d="M750 0v10H450v10M150 34V20h600v14M450 20v14"/></svg>
+   <div class="capability-branches">
+    <button class="branch-card" data-architecture="knowledge" aria-pressed="false"><svg class="icon"><use href="#i-book"/></svg><strong>知识库 MCP</strong><small>制度 · 文档 · 企业知识</small><span>↓ 知识库／文档与向量库</span></button>
+    <button class="branch-card" data-architecture="data" aria-pressed="false"><svg class="icon"><use href="#i-data"/></svg><strong>问数 MCP</strong><small>查询 · 统计 · 分析</small><span>↓ 分析服务／数据库与数仓</span></button>
+    <button class="branch-card" data-architecture="business" aria-pressed="false"><svg class="icon"><use href="#i-action"/></svg><strong>业务 MCP</strong><small>业务状态 · 操作 · 审批</small><span>↓ 业务服务／系统接口</span></button>
+   </div>
+   <figcaption>点击组件查看职责。图示描述目标分工，不表示已经完成集成。</figcaption>
+  </figure>
+  <aside class="architecture-detail" aria-live="polite"><span class="label" id="architecture-label">身份入口</span><h3 id="architecture-detail-title">AI Gateway</h3><p id="architecture-detail-description">确认企业用户是谁，将既有身份转换为智能体可使用的身份上下文，并限定可使用的能力。</p><div class="detail-rule"><b>职责边界</b><p id="architecture-detail-boundary">复用企业身份和权限来源；不另建一套与业务系统脱节的用户权限。</p></div><p class="detail-source" id="architecture-detail-source">依据：原文 §3.1</p></aside>
+ </div>
+ <div class="takeaway"><strong>接入层治理共性调用，业务服务执行数据与业务约束。</strong><small>原文 §2—§4；最终数据权限、脱敏、审批和业务规则的接口分工仍需落地明确。</small></div>
+</section>
+
+<section class="slide" id="responsibilities" data-chapter="integration" data-title="职责边界" hidden aria-labelledby="title-responsibilities">
+ <p class="eyebrow">03 / 职责划分</p><h2 id="title-responsibilities">入口管身份，执行层管任务，<br><em>出口管调用。</em></h2>
+ <div class="responsibility-grid">
+  <article><span class="label">进入智能体之前</span><svg class="icon"><use href="#i-user"/></svg><h3>AI Gateway</h3><p>谁能进入，能使用哪些能力。</p><ul><li>用户认证与身份转换</li><li>智能体能力授权</li><li>会话初始化、用户行为审计</li></ul></article>
+  <article class="runtime"><span class="label">任务执行过程中</span><svg class="icon"><use href="#i-loop"/></svg><h3>DSH Runtime</h3><p>在获准范围内组织执行。</p><ul><li>任务规划与推进</li><li>插件、技能与工具调用</li><li>会话记录与管理</li></ul></article>
+  <article><span class="label">调用企业能力之前</span><svg class="icon"><use href="#i-shield"/></svg><h3>MCP Gateway</h3><p>本次调用哪个工具，是否获准。</p><ul><li>身份凭据校验、工具权限</li><li>按策略检查声明的范围</li><li>调用审计、限流与安全策略</li></ul></article>
+ </div>
+ <div class="business-foundation"><svg class="icon"><use href="#i-data"/></svg><div><span class="label">复用已有业务系统</span><h3>数据与业务约束继续生效</h3><p>组织与数据权限 · 数据脱敏 · 操作授权 · 审批权限 · 业务规则</p></div><span class="foundation-note">具体检查落点与接口契约<br>仍需确认</span></div>
+ <details class="expanded-note"><summary>插件、技能、工具和会话，在本设计中分别指什么？</summary><div class="term-grid"><p><b>插件（Plugin）</b>装配可扩展能力与业务连接。</p><p><b>技能（Skill）</b>提供专业方法、指令和参考内容。</p><p><b>工具（Tool）</b>执行具体查询、计算或业务动作。</p><p><b>会话（Session）</b>组织一段用户交互及其执行上下文。</p></div></details>
+ <div class="takeaway"><strong>企业权限由可信网关与业务服务承接，DSH 保持通用。</strong><small>原文 §3、§4。运行时的工具、插件、凭据和网络访问边界也需配置，避免绕开受控能力出口。</small></div>
+</section>
+
+<section class="slide" id="identity" data-chapter="integration" data-title="身份与调用链" hidden aria-labelledby="title-identity">
+ <p class="eyebrow">04 / 身份传递</p><h2 id="title-identity">传递可信上下文，<em>逐层作出授权判断。</em></h2><p class="lede">身份字段描述用户；凭据与可信绑定证明来源。工具参数由模型提出，身份与权限由可信服务端管理。</p>
+ <div class="choice-row" role="tablist" aria-label="身份调用示意"><button role="tab" id="identity-tab-valid" aria-controls="identity-panel" aria-selected="true" data-identity="valid">正常调用</button><button role="tab" id="identity-tab-denied" aria-controls="identity-panel" aria-selected="false" tabindex="-1" data-identity="denied">缺少工具权限</button><button role="tab" id="identity-tab-untrusted" aria-controls="identity-panel" aria-selected="false" tabindex="-1" data-identity="untrusted">仅传用户 ID</button></div>
+ <div class="identity-layout" id="identity-panel" role="tabpanel" aria-labelledby="identity-tab-valid">
+  <div><ol class="identity-flow" aria-label="身份与授权的六步示意">
+   <li data-identity-step="0"><span>1</span><div><b>企业身份体系</b><small>认证企业用户</small></div><em>已认证</em></li>
+   <li data-identity-step="1"><span>2</span><div><b>AI Gateway</b><small>身份映射、能力授权、会话初始化</small></div><em>可信映射</em></li>
+   <li data-identity-step="2"><span>3</span><div><b>DSH 与调用适配</b><small>选择工具；可信适配层绑定身份上下文</small></div><em>发起调用</em></li>
+   <li data-identity-step="3"><span>4</span><div><b>MCP Gateway</b><small>凭据、工具权限与策略检查</small></div><em>调用获准</em></li>
+   <li data-identity-step="4"><span>5</span><div><b>MCP 服务与业务系统</b><small>执行数据范围与业务规则</small></div><em>业务校验</em></li>
+   <li data-identity-step="5"><span>6</span><div><b>结果返回与审计</b><small>返回获准结果，关联调用记录</small></div><em>返回结果</em></li>
+  </ol></div>
+  <div class="identity-detail"><span class="label" id="identity-context-label">原文身份映射示例 · 用户 10086</span><pre id="identity-context">{
+  "user_id": "10086",
+  "roles": ["administrator"],
+  "permissions": [
+    "knowledge.use",
+    "data.query"
+  ]
+}</pre><p class="context-note">字段结构用于说明设计，不是 DSH 的既定接口；凭据不放入模型可修改的参数。</p><div class="identity-result" aria-live="polite"><span class="label">示意结果 · 未发起真实请求</span><h3 id="identity-result-title">通过网关，再执行业务校验</h3><p id="identity-result-description">当前身份具备数据查询能力；业务服务仍按用户的数据范围与规则执行查询。</p></div></div>
+ </div>
+ <div class="takeaway"><strong>每一跳都要保留可信用户关联，工具可见性之外仍需服务端授权。</strong><small>原文 §3、§5；可信绑定与凭据安全边界为图解整理补充。签发方、目标资源、有效期和下游认证方式尚待确定。</small></div>
+</section>
+
+<section class="slide" id="capabilities" data-chapter="integration" data-title="三类 MCP 能力" hidden aria-labelledby="title-capabilities">
+ <p class="eyebrow">05 / 能力接入</p><h2 id="title-capabilities">同一接入方式，<em>三类企业能力。</em></h2><p class="lede">按主要职责分类，不要求每类只有一个服务；现有系统继续提供能力与权限依据。</p>
+ <div class="capability-selector" role="tablist" aria-label="MCP能力分类">
+  <button role="tab" id="capability-tab-knowledge" aria-controls="capability-panel" aria-selected="true" data-capability="knowledge"><svg class="icon"><use href="#i-book"/></svg><strong>知识库 MCP</strong><small>查询制度与知识</small></button>
+  <button role="tab" id="capability-tab-data" aria-controls="capability-panel" aria-selected="false" tabindex="-1" data-capability="data"><svg class="icon"><use href="#i-data"/></svg><strong>问数 MCP</strong><small>查询与分析数据</small></button>
+  <button role="tab" id="capability-tab-business" aria-controls="capability-panel" aria-selected="false" tabindex="-1" data-capability="business"><svg class="icon"><use href="#i-action"/></svg><strong>业务 MCP</strong><small>业务状态与操作</small></button>
+ </div>
+ <div class="capability-panel" id="capability-panel" role="tabpanel" aria-labelledby="capability-tab-knowledge">
+  <div class="capability-example"><span class="label">业务问题示意</span><h3 id="capability-question">“安全生产管理制度是什么？”</h3><div class="capability-path"><span>DSH</span><i>→</i><span>MCP 网关</span><i>→</i><strong id="capability-service">知识库 MCP</strong></div><div class="connected-system"><span class="label">连接已有能力</span><b id="capability-system">知识库系统 · 文档库 · 向量数据库</b><p id="capability-output">检索相关文档，返回可引用的知识内容。</p></div></div>
+  <aside class="capability-rules"><span class="label">继承既有规则</span><h3 id="capability-rules-title">知识访问范围</h3><ul id="capability-rules"><li>用户可访问的知识与文档范围</li><li>既有知识库的访问策略</li></ul><p id="capability-boundary">通常不直接连接业务数据库；具体接法依据已有知识系统。</p></aside>
+ </div>
+ <div class="takeaway"><strong>标准化连接，保留不同能力的业务含义和权限约束。</strong><small>原文 §4。知识访问策略为整理补充；问数的数据权限、组织范围、脱敏及业务操作与审批规则来自原文。</small></div>
+</section>
+
+<section class="slide" id="alternatives" data-chapter="decisions" data-title="接入方案取舍" hidden aria-labelledby="title-alternatives">
+ <p class="eyebrow">06 / 方案取舍</p><h2 id="title-alternatives">从快速接入，<em>走向集中治理。</em></h2><p class="lede">原文比较三种组织方式：目标采用 MCP Gateway；前两种方式作为验证与中间阶段选项。</p>
+ <div class="alternative-grid">
+  <article><span class="label">方案一 · 快速验证</span><h3>工具元信息</h3><p class="term">工具调用元信息（Tool Metadata）携带用户字段。</p><div class="mini-route"><span>DSH</span><i>→</i><span>用户字段</span><i>→</i><span>MCP</span></div><dl><dt>收益</dt><dd>实现简单，开发成本低。</dd><dt>代价</dt><dd>字段的可信来源须另行建立；治理容易分散。</dd></dl><p class="route-fit">适合受控的概念验证（Proof of Concept，PoC）：先验证能力能否接通。</p></article>
+  <article><span class="label">方案二 · 中间阶段</span><h3>访问令牌</h3><p class="term">访问令牌（Access Token）承载目标资源的调用授权。</p><div class="mini-route"><span>AI 网关</span><i>→</i><span>凭据适配</span><i>→</i><span>MCP</span></div><dl><dt>收益</dt><dd>可衔接企业服务认证方式。</dd><dt>代价</dt><dd>各服务仍需校验目标资源、权限与有效期；治理较分散。</dd></dl><p class="route-fit">原文称“Authorization Token 透传”；实际凭据机制仍待确定。</p></article>
+  <article class="selected"><span class="label">方案三 · 目标采用</span><h3>MCP Gateway</h3><p class="term">将多能力服务的共性调用治理集中到出口。</p><div class="mini-route"><span>DSH</span><i>→</i><span>MCP 网关</span><i>→</i><span>多 MCP</span></div><dl><dt>收益</dt><dd>统一校验、工具授权、审计与限流。</dd><dt>代价</dt><dd>增加网关建设、部署与运维复杂度。</dd></dl><p class="route-fit">适合多系统接入与统一治理的目标方向。</p></article>
+ </div>
+ <div class="design-note"><b>两个不同维度</b><span>令牌是身份凭据，网关是治理落点；Gateway 方案仍可使用令牌。目标资源凭据须正确校验，不能把面向其他服务的令牌直接原样转发。</span></div>
+ <div class="takeaway"><strong>本设计选择集中治理，同时保留分阶段接入路径。</strong><small>原文 §5；令牌与网关的维度区分、安全限定为整理补充，官方依据见“设计原文与补充依据”。</small></div>
+</section>
+
+<section class="slide" id="evolution" data-chapter="decisions" data-title="三阶段演进" hidden aria-labelledby="title-evolution">
+ <p class="eyebrow">07 / 分阶段建设</p><h2 id="title-evolution">先验证接通，<em>再按需求增加治理。</em></h2><p class="lede">以下为演进设计，不表示当前实施进度；目标架构与每一期的建设范围分别表达。</p>
+ <div class="phase-selector" role="tablist" aria-label="架构演进阶段">
+  <button role="tab" id="phase-tab-connect" aria-controls="phase-panel" aria-selected="true" data-phase="connect"><span>01</span><strong>能力接入验证</strong><small>先接通已有能力</small></button>
+  <button role="tab" id="phase-tab-govern" aria-controls="phase-panel" aria-selected="false" tabindex="-1" data-phase="govern"><span>02</span><strong>企业化治理</strong><small>增加集中能力出口</small></button>
+  <button role="tab" id="phase-tab-platform" aria-controls="phase-panel" aria-selected="false" tabindex="-1" data-phase="platform"><span>03</span><strong>行业 Agent 平台</strong><small>面向多行业、多系统</small></button>
+ </div>
+ <div class="phase-panel" id="phase-panel" role="tabpanel" aria-labelledby="phase-tab-connect"><span class="label" id="phase-label">第一阶段 · 目标：验证企业能力可被调用</span><div class="phase-route" id="phase-route"><span>AI Gateway</span><i>→</i><span>DSH Runtime</span><i>→</i><span>知识库／问数 MCP</span></div><div class="phase-explanation"><div><h3 id="phase-focus-title">重点验证接入链路</h3><p id="phase-focus">身份接入、插件加载、知识库调用和问数调用。</p></div><div><h3>落地需要明确</h3><p id="phase-boundary">第一阶段尚未增加 MCP Gateway；身份校验、工具授权和调用审计仍要有承载位置，具体分工待确认。</p></div></div></div>
+ <div class="takeaway"><strong>第一阶段直连验证，第二阶段引入网关，与最终目标一致。</strong><small>原文 §6。阶段进入条件、产品选型、部署方式与验收标准尚未确定。</small></div>
+</section>
+
+<section class="slide" id="decisions" data-chapter="decisions" data-title="设计决策与未定项" hidden aria-labelledby="title-decisions">
+ <p class="eyebrow">08 / 决策归纳</p><h2 id="title-decisions">架构方向已选，<em>实现契约仍需明确。</em></h2>
+ <div class="decision-ledger"><div class="settled"><span class="label">备忘录已确定</span><h3>保留清楚的职责边界</h3><ol><li>AI Gateway 复用企业身份，承接能力授权。</li><li>DSH 保持通用执行，行业能力通过扩展接入。</li><li>MCP Gateway 作为目标架构的安全出口。</li><li>知识库、问数、业务 MCP 连接各自已有系统。</li><li>按接入验证、企业治理、行业平台逐步演进。</li></ol></div><div class="pending"><span class="label">落地待确认 · 根据原文边界整理</span><h3>把职责落到接口与验收</h3><ol><li>两个网关复用什么产品，哪些能力需要自建？</li><li>身份映射、凭据签发与会话绑定如何实现？</li><li>网关到下游采用什么可信认证与授权方式？</li><li>首期授权审计、最终业务检查分别由谁执行？</li><li>写操作、审批、失败重试与重复操作如何控制？</li></ol></div></div>
+ <div class="final-statement"><span>目标架构</span><strong>AI Gateway <i>→</i> DSH Runtime <i>→</i> MCP Gateway <i>→</i> 企业能力体系</strong><p>预期复用企业基础能力，形成可扩展的接入与治理体系；集成、安全和业务效果尚需验证。</p></div>
+ <div class="source-actions"><button class="button primary sources-trigger">设计原文与补充依据</button><button class="button" id="print-page" title="打印八个主题，交互图示保留当前选择">打印图示</button><a href="agent-research.html#q10">回看通用选型方法 ↗</a></div>
+ <div class="takeaway"><strong>目标职责已经明确，具体接口与安全边界通过原型验证落实。</strong><small>原文 §7；待确认项与安全边界为整理补充，没有替代产品选型或真实集成验证。</small></div>
+</section>
+</main>
+<footer class="footer"><div class="page-position"><span class="foot-label" id="foot-label">设计目标</span><span class="counter" id="counter">全篇 01 / 08</span></div><div class="pager"><button id="previous" aria-label="上一页"><svg class="icon" aria-hidden="true"><use href="#i-left"/></svg><span>上一页</span></button><button id="next" aria-label="本章下一页：目标架构图"><span class="next-copy"><small id="next-kind">本章下一页</small><strong id="next-title">目标架构图</strong></span><svg class="icon" aria-hidden="true"><use href="#i-right"/></svg></button></div></footer>
+<dialog id="sources" aria-labelledby="sources-title"><div class="dialog-head"><div><span class="label">原始设计与整理边界</span><h2 id="sources-title">设计原文与补充依据</h2></div><button class="button" id="sources-close" aria-label="关闭设计原文">关闭</button></div><p>主体图解依据《企业 Agent 集成架构与 MCP 能力接入体系设计决策备忘录》。原文保留；身份可信绑定、目标资源凭据、最终业务检查和待确认项属于图解整理补充。</p><div class="reference-links"><a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization" target="_blank" rel="noopener noreferrer">MCP 授权规范 ↗</a><a href="https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices#token-passthrough" target="_blank" rel="noopener noreferrer">令牌传递安全边界 ↗</a><a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/SAFETY.md" target="_blank" rel="noopener noreferrer">DSH 安全说明 ↗</a></div><p class="source-date">图解整理与补充资料核对：2026-10-29。交互为本地静态示意，不访问企业系统、不调用真实模型、不执行真实授权。</p><details class="original-wrapper"><summary>展开完整设计原文</summary><div class="original"><!-- ORIGINAL_ENTERPRISE --></div></details></dialog>

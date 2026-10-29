@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="图解企业 Agent 集成架构与 MCP 能力接入体系：身份入口、DSH 通用执行、能力安全出口、三类企业能力与分阶段演进。"><title>企业 Agent 集成架构与 MCP 能力接入体系</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23102744'/%3E%3Cpath d='M8 8h16v7c0 6-8 10-8 10S8 21 8 15z' fill='none' stroke='%2380dfd1' stroke-width='2'/%3E%3C/svg%3E"><style>:root{--ink:#172b45;--muted:#607188;--blue:#2b59da;--teal:#087d79;--navy:#102744;--paper:#f4f7fb;--line:#d9e3ef;--pale:#edf3ff;--header-space:72px;--subnav-space:68px;--footer:76px;font-family:"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;color:var(--ink);background:var(--paper);font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer;color:inherit}button:disabled{opacity:.4;cursor:default}a{color:var(--blue);text-underline-offset:3px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #e59a35;outline-offset:4px}[hidden]{display:none!important}h1,h2,h3,p,figure{margin:0}svg.icon{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.symbols{position:absolute;width:0;height:0;overflow:hidden}.skip{position:fixed;left:12px;top:-100px;background:white;padding:10px;z-index:150}.skip:focus{top:10px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:72px;padding:12px 3.4vw;border-bottom:1px solid var(--line);background:#fff}.brand{display:flex;align-items:center;gap:11px;white-space:nowrap;text-decoration:none;font-size:16px;font-weight:700;color:var(--navy)}.brandmark{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--navy);color:#80dfd1;flex-shrink:0}.brand small{display:block;color:var(--muted);font-weight:400;font-size:10px;letter-spacing:.06em;margin-top:4px}.chapters{display:flex;gap:7px;min-width:0}.chapters button,.quiet{border:0;background:transparent;padding:9px 11px;border-radius:7px;color:var(--muted);font-size:12px}.chapters button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;line-height:1.4;white-space:nowrap}.chapter-count{font-size:10px;font-weight:400}.chapters button[aria-current=true]{background:var(--pale);color:var(--blue);font-weight:700}.actions{display:flex;align-items:center;gap:3px;flex-shrink:0}.quiet:hover{background:var(--pale);color:var(--blue)}
+.chapter-navigation{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:20px;min-height:68px;padding:10px 3.4vw;background:#fff;border-bottom:1px solid var(--line)}.chapter-progress{font-size:12px;color:var(--muted);line-height:1.6;white-space:nowrap}.chapter-pages{display:grid;grid-template-columns:repeat(var(--chapter-pages,2),minmax(0,1fr));gap:8px;min-width:0;max-width:960px}.chapter-page{border:1px solid var(--line);border-radius:7px;background:#fff;padding:9px 12px;font-size:12px;line-height:1.5;color:var(--muted);text-align:left;min-width:0;overflow-wrap:anywhere}.chapter-page:hover,.chapter-page[aria-current=page]{border-color:#a7bbed;color:var(--blue);background:var(--pale)}.chapter-page[aria-current=page]{font-weight:650}
+main{max-width:1440px;margin:auto}.slide{min-height:calc(100dvh - var(--header-space) - var(--subnav-space) - var(--footer));padding:28px clamp(24px,4.2vw,60px) 22px;display:flex;flex-direction:column;gap:18px;animation:arrive .2s ease}.eyebrow,.label{font-size:11px;font-weight:650;color:var(--blue);letter-spacing:.06em;line-height:1.6}.eyebrow{display:flex;align-items:center;gap:10px}h1,h2{font-size:clamp(30px,3vw,43px);line-height:1.35;font-weight:750;letter-spacing:-.035em}h1 em,h2 em{color:var(--teal);font-style:normal}h3{font-size:20px;line-height:1.5}.lede{font-size:15px;line-height:1.8;color:var(--muted);max-width:1050px}.takeaway{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);line-height:1.7;font-size:15px}.takeaway strong{font-weight:600}.takeaway small{display:block;color:var(--muted);font-size:11px;line-height:1.7;margin-top:5px}
+.cover{display:grid;grid-template-columns:1.15fr 1fr;gap:24px 48px;align-items:center}.cover-copy h1{margin:16px 0 20px}.cover-copy .lede{font-size:17px}.definition{max-width:590px;font-size:12px;line-height:1.85;color:var(--muted);margin-top:18px}.cover-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.cover-tags span{padding:5px 9px;border-radius:5px;background:#e9f3f1;color:#28706a;font-size:11px}.cover-diagram{min-width:0}.cover-question{display:flex;align-items:center;gap:18px;background:white;border:1px solid var(--line);padding:20px;border-radius:12px}.cover-question>.icon{width:28px;height:28px;color:var(--blue)}.cover-question small{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}.cover-question strong{font-size:18px;line-height:1.5}.cover-question p{font-size:12px;color:var(--muted);line-height:1.7;margin-top:5px}.cover-question.runtime{background:var(--navy);border-color:var(--navy);color:white}.cover-question.runtime .icon{color:#8fe0d2}.cover-question.runtime p,.cover-question.runtime small{color:#b8cbe0}.cover-connector{display:block;padding:4px 0 4px 34px;font-size:17px;color:#9aadc5}.cover>.takeaway{grid-column:1/-1;width:100%}
+.architecture-layout{display:grid;grid-template-columns:1.8fr 1fr;gap:24px;min-width:0}.architecture-map{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;min-width:0}.enterprise-origin{display:flex;align-items:center;justify-content:space-between;gap:15px;font-size:12px;line-height:1.5}.enterprise-origin>span{display:flex;align-items:center;gap:8px}.enterprise-origin svg{width:18px;height:18px;color:var(--blue)}.enterprise-origin>small{color:var(--muted);font-size:10px}.origin-arrow{width:32%;text-align:center;color:#718aab;font-size:18px;padding:6px 0}.origin-arrow span{font-size:10px}.architecture-core{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.arch-node{position:relative;display:flex;flex-direction:column;gap:6px;align-items:flex-start;justify-content:center;border:1px solid var(--line);border-radius:8px;background:#f8faff;padding:14px 12px;text-align:left;min-width:0}.arch-node:not(:last-child)::after{content:"→";position:absolute;right:-17px;top:calc(50% - 13px);color:#8196b3;font-size:19px}.node-kicker{font-size:10px;color:var(--muted)}.arch-node strong{font-size:16px;line-height:1.4;overflow-wrap:anywhere}.arch-node small{font-size:10px;line-height:1.65;color:var(--muted)}.arch-node.runtime{background:#edf3ff}.arch-node.gateway{background:#edf7f5}.arch-node[aria-pressed=true],.branch-card[aria-pressed=true]{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}.branch-label{text-align:right;color:var(--muted);font-size:10px;line-height:1.5;margin-top:8px}.branch-lines{display:block;width:100%;height:27px;fill:none;stroke:#afc1d8;stroke-width:1.2}.capability-branches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.branch-card{display:flex;flex-direction:column;align-items:center;gap:7px;border:1px solid var(--line);border-radius:8px;background:white;padding:12px 6px;min-width:0}.branch-card>.icon{color:var(--teal);width:22px;height:22px}.branch-card strong{font-size:13px}.branch-card small{font-size:10px;color:var(--muted);line-height:1.5}.branch-card>span{border-top:1px solid #e3e9f2;padding-top:8px;line-height:1.6;font-size:10px;width:100%;color:var(--muted)}figcaption{font-size:10px;line-height:1.6;color:var(--muted);margin-top:12px}.architecture-detail{background:#edf3ff;border:1px solid #dae5f6;border-radius:12px;padding:24px;display:flex;flex-direction:column;align-items:flex-start;gap:14px}.architecture-detail h3{font-size:24px;color:var(--blue)}.architecture-detail>p,.detail-rule p{font-size:14px;line-height:1.85}.detail-rule{padding-top:14px;border-top:1px solid #d6e2f4;width:100%}.detail-rule b{display:block;font-size:11px;color:var(--blue);margin-bottom:7px}.architecture-detail .detail-source{font-size:10px;color:var(--muted);margin-top:auto}
+.responsibility-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.responsibility-grid article{position:relative;background:white;border:1px solid var(--line);border-radius:12px;padding:24px}.responsibility-grid article>.icon{position:absolute;top:24px;right:24px;color:var(--blue)}.responsibility-grid h3{margin:18px 0 10px;font-size:22px}.responsibility-grid article>p{font-size:14px;line-height:1.8;color:var(--muted)}.responsibility-grid ul{margin:18px 0 0;padding-left:18px;font-size:13px;line-height:2;color:var(--muted)}.responsibility-grid .runtime{background:var(--navy);color:#fff;border-color:var(--navy)}.runtime>.label,.responsibility-grid .runtime>.icon{color:#8fe0d2}.responsibility-grid .runtime p,.responsibility-grid .runtime ul{color:#bfcee0}.business-foundation{display:flex;align-items:center;gap:18px;border:1px solid #cfe4e0;background:#edf7f4;border-radius:10px;padding:19px 22px}.business-foundation>.icon{color:var(--teal)}.business-foundation .label{color:var(--teal)}.business-foundation h3{font-size:18px;margin:3px 0 6px}.business-foundation p{color:#46756e;font-size:12px;line-height:1.8}.foundation-note{margin-left:auto;font-size:11px;line-height:1.7;color:#5a7e78;flex-shrink:0}
+details.expanded-note{border:1px solid var(--line);border-radius:8px;background:white;font-size:12px;color:var(--muted)}details.expanded-note>summary{padding:12px 16px;cursor:pointer;font-weight:600}.term-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;padding:4px 16px 16px;font-size:12px;line-height:1.8}.term-grid b{display:block;color:var(--ink);margin-bottom:4px}
+.choice-row{display:flex;gap:8px;flex-wrap:wrap}.choice-row button{border:1px solid var(--line);border-radius:7px;background:white;padding:9px 16px;font-size:12px;color:var(--muted)}.choice-row button[aria-selected=true]{color:#fff;background:var(--blue);border-color:var(--blue)}.identity-layout{display:grid;grid-template-columns:1.2fr 1fr;gap:24px}.identity-flow{list-style:none;padding:0;margin:0;display:grid;gap:7px}.identity-flow li{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--line);background:white;border-radius:8px;line-height:1.5}.identity-flow li>span{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#eaf1ff;color:var(--blue);font-size:11px;flex-shrink:0}.identity-flow li b{font-size:13px}.identity-flow li small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.identity-flow li em{font-size:10px;font-style:normal;color:var(--teal);margin-left:auto;flex-shrink:0}.identity-flow .blocked{border-color:#d09b7e;background:#fff6ef}.identity-flow .blocked>span{background:#fbe4d6;color:#9b562d}.identity-flow .blocked em{color:#9b562d}.identity-flow .unreached{opacity:.5}.identity-detail{background:#edf3ff;border:1px solid #dbe5f5;padding:22px;border-radius:12px}.identity-detail pre{margin:14px 0 10px;padding:14px;border-radius:7px;background:#fff;color:#32537b;font-size:12px;line-height:1.65;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}.context-note{font-size:10px;line-height:1.75;color:var(--muted)}.identity-result{margin-top:16px;padding-top:15px;border-top:1px solid #d1dff2}.identity-result h3{font-size:18px;margin:8px 0}.identity-result p{font-size:12px;line-height:1.8;color:var(--muted)}.identity-result.error h3{color:#9c572f}
+.capability-selector{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.capability-selector button{display:grid;grid-template-columns:32px 1fr;gap:4px 10px;align-items:center;text-align:left;border:1px solid var(--line);border-radius:9px;background:white;padding:18px;color:var(--muted);min-width:0}.capability-selector svg{grid-row:span 2;color:var(--blue)}.capability-selector strong{font-size:16px;color:var(--ink)}.capability-selector small{font-size:11px;line-height:1.6}.capability-selector button[aria-selected=true]{background:var(--pale);border-color:#9eb7ed;box-shadow:inset 0 0 0 1px #9eb7ed}.capability-selector button[aria-selected=true] strong{color:var(--blue)}.capability-panel{display:grid;grid-template-columns:1.6fr 1fr;gap:24px}.capability-example{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px}.capability-example h3{font-size:25px;margin:16px 0 24px}.capability-path{display:flex;gap:10px;align-items:center}.capability-path span,.capability-path strong{padding:10px 13px;border:1px solid var(--line);border-radius:6px;background:#f7faff;flex:1;text-align:center;font-size:12px;white-space:nowrap}.capability-path strong{background:#eaf5f2;color:var(--teal);border-color:#b9d9d2}.capability-path i{font-style:normal;color:#92a7c0}.connected-system{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}.connected-system b{display:block;margin:9px 0;font-size:15px;line-height:1.7}.connected-system p{font-size:12px;line-height:1.85;color:var(--muted)}.capability-rules{border-radius:12px;background:#edf7f4;border:1px solid #d0e5de;padding:25px}.capability-rules .label{color:var(--teal)}.capability-rules h3{margin:15px 0;font-size:22px}.capability-rules ul{padding-left:18px;margin:0 0 20px;font-size:13px;line-height:2}.capability-rules>p{padding-top:15px;border-top:1px solid #cce2db;color:#55786f;font-size:12px;line-height:1.85}
+.alternative-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.alternative-grid article{border:1px solid var(--line);border-radius:12px;background:white;padding:23px;min-width:0;display:flex;flex-direction:column}.alternative-grid article.selected{border-color:#9dbbeb;background:#edf3ff}.alternative-grid h3{font-size:23px;margin:12px 0}.term{color:var(--muted);font-size:12px;line-height:1.8;min-height:44px}.mini-route{display:flex;gap:6px;align-items:center;margin:20px 0;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.mini-route span{font-size:10px;line-height:1.6;flex:1;text-align:center;padding:7px 5px;background:#f5f8fc;border:1px solid var(--line);border-radius:5px}.mini-route i{font-style:normal;color:#90a4bd}.selected .mini-route span{background:white}.alternative-grid dl{display:grid;grid-template-columns:30px 1fr;gap:12px 8px;margin:0;font-size:12px;line-height:1.85}.alternative-grid dt{font-weight:600;color:var(--ink)}.alternative-grid dd{margin:0;color:var(--muted)}.route-fit{font-size:11px;line-height:1.8;color:var(--muted);padding-top:20px;margin-top:auto}.design-note{display:flex;gap:16px;align-items:baseline;font-size:12px;line-height:1.85;background:#edf7f4;border-left:3px solid var(--teal);padding:13px 16px}.design-note b{color:var(--teal);white-space:nowrap}.design-note span{color:#4d706a}
+.phase-selector{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.phase-selector button{position:relative;text-align:left;background:white;border:1px solid var(--line);border-radius:10px;padding:20px;min-width:0;display:flex;flex-direction:column;gap:9px}.phase-selector button>span{font-size:11px;color:var(--blue);font-family:Consolas,monospace}.phase-selector strong{font-size:18px}.phase-selector small{font-size:11px;color:var(--muted);line-height:1.7}.phase-selector button[aria-selected=true]{background:var(--navy);border-color:var(--navy);color:white}.phase-selector button[aria-selected=true]>span{color:#8fe0d2}.phase-selector button[aria-selected=true] small{color:#b7cce3}.phase-panel{padding:28px;background:white;border:1px solid var(--line);border-radius:12px}.phase-route{display:flex;align-items:center;gap:12px;margin:25px 0 28px}.phase-route span{flex:1;border:1px solid var(--line);border-radius:7px;padding:15px 12px;text-align:center;background:#f5f8fd;font-size:14px;font-weight:600;line-height:1.6}.phase-route .new-layer{background:#e9f5f1;border-color:#a8d5c8;color:var(--teal)}.phase-route i{font-style:normal;color:#91a5be}.phase-explanation{display:grid;grid-template-columns:1fr 1fr;gap:28px;border-top:1px solid var(--line);padding-top:20px}.phase-explanation h3{font-size:16px;margin-bottom:10px}.phase-explanation p{font-size:13px;line-height:1.9;color:var(--muted)}
+.decision-ledger{display:grid;grid-template-columns:1fr 1fr;gap:24px}.decision-ledger>div{background:white;border:1px solid var(--line);border-radius:12px;padding:24px}.decision-ledger .settled{background:#edf7f4;border-color:#c9e2d9}.settled .label{color:var(--teal)}.decision-ledger .pending{background:#fff8ee;border-color:#eadbc4}.pending .label{color:#9c7040}.decision-ledger h3{font-size:21px;margin:14px 0}.decision-ledger ol{padding-left:20px;margin:0;font-size:13px;line-height:2}.decision-ledger li+li{margin-top:5px}.final-statement{padding:22px 25px;background:var(--navy);border-radius:11px;color:white}.final-statement>span{display:block;font-size:10px;letter-spacing:.06em;color:#84cabb;margin-bottom:10px}.final-statement strong{display:block;font-size:18px;line-height:1.8}.final-statement i{font-style:normal;color:#85b6d3;margin:0 7px}.final-statement p{font-size:12px;color:#b9ccdf;line-height:1.85;margin-top:9px}.source-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.source-actions a{font-size:12px;margin-left:auto}.button{padding:9px 14px;border:1px solid #b4c6e0;background:white;color:var(--blue);border-radius:7px;font-size:12px;font-weight:600;line-height:1.6}.button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.footer{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:12px 3.4vw;min-height:var(--footer);border-top:1px solid var(--line);background:white}.page-position{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}.foot-label{font-size:12px;color:var(--muted);line-height:1.5}.counter{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}.pager{display:flex;gap:12px;min-width:0}.pager>button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:8px 12px;border:1px solid var(--line);background:white;border-radius:8px}.pager>#next{width:235px;max-width:42vw;justify-content:space-between;background:var(--blue);color:white;border-color:var(--blue);text-align:left}.next-copy{display:flex;flex-direction:column;gap:2px;min-width:0}.next-copy small{font-size:10px;line-height:1.4;opacity:.85}.next-copy strong{font-size:13px;line-height:1.5}
+dialog{max-width:960px;width:calc(100% - 32px);max-height:85dvh;border:1px solid var(--line);border-radius:14px;padding:28px;color:var(--ink);box-shadow:0 20px 100px #10274433}dialog::backdrop{background:#10274466;backdrop-filter:blur(3px)}.dialog-head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px}.dialog-head h2{font-size:25px;margin-top:6px}dialog>p{font-size:13px;line-height:1.9;color:var(--muted);margin-bottom:18px}.reference-links{display:flex;flex-wrap:wrap;gap:10px 20px;font-size:12px;line-height:1.8;margin-bottom:20px}dialog .source-date{font-size:11px}.original-wrapper{border:1px solid var(--line);border-radius:8px}.original-wrapper>summary{padding:14px 16px;cursor:pointer;font-size:13px;font-weight:600}.original{border-top:1px solid var(--line);padding:20px;font-size:14px;line-height:1.9;overflow-wrap:anywhere}.original h1{font-size:25px}.original h2{font-size:22px;margin:28px 0 14px}.original h3{font-size:18px;margin:24px 0 12px}.original p{margin-bottom:16px}.original pre{white-space:pre;overflow:auto;background:#f1f5fb;border-radius:7px;padding:16px;font-size:12px;line-height:1.6}.original blockquote{border-left:3px solid #a9c0e0;background:#edf3fc;margin:15px 0;padding:12px 15px}.original blockquote p:last-child{margin-bottom:0}.original hr{border:0;border-top:1px solid var(--line);margin:28px 0}.original table{border-collapse:collapse;max-width:100%}.original th,.original td{padding:9px;border:1px solid var(--line)}
+body.reading .slide{min-height:auto;padding-top:46px;padding-bottom:46px;border-bottom:1px solid var(--line)}body.reading .footer{position:sticky;bottom:0;z-index:10}
+@keyframes arrive{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media(max-width:1200px){.topbar{flex-wrap:wrap;gap:8px 20px}.brand{flex:1}.brand small{display:none}.chapters{order:3;width:100%;justify-content:center}.chapters button{flex-direction:row;align-items:center;gap:9px}.slide{padding-left:30px;padding-right:30px}.cover{gap:24px}.cover-question{padding:16px}.architecture-layout{grid-template-columns:1.65fr 1fr;gap:18px}.architecture-detail{padding:20px}.architecture-map{padding:16px}.arch-node{padding:13px 9px}.arch-node strong{font-size:14px}.enterprise-origin{flex-direction:column;align-items:flex-start;gap:5px}.responsibility-grid{gap:14px}.responsibility-grid article{padding:20px}.responsibility-grid article>.icon{right:20px;top:20px}.alternative-grid{gap:14px}.alternative-grid article{padding:20px}.mini-route{gap:4px}.mini-route span{font-size:9px}.term-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){h1,h2{font-size:31px}.slide{padding:25px 24px 22px;gap:16px}.cover-copy .lede{font-size:15px}.cover-question strong{font-size:15px}.cover-question p{font-size:11px}.architecture-layout{grid-template-columns:1fr}.architecture-detail{display:grid;grid-template-columns:1fr 2fr;gap:10px 20px}.architecture-detail>h3{grid-column:1}.architecture-detail>.label{grid-column:1}.architecture-detail>p:not(.detail-source){grid-row:1/3;grid-column:2}.architecture-detail .detail-rule{grid-column:1/-1;padding-top:10px}.architecture-detail .detail-source{grid-column:1/-1}.architecture-detail h3{font-size:20px}.architecture-detail>p,.detail-rule p{font-size:12px}.responsibility-grid h3{font-size:18px}.responsibility-grid article>p{font-size:12px}.responsibility-grid ul{font-size:11px}.responsibility-grid article>.icon{display:none}.identity-layout{grid-template-columns:1.1fr 1fr;gap:16px}.identity-detail{padding:17px}.identity-flow li{padding:10px}.identity-flow li small{font-size:10px}.identity-flow li em{font-size:9px}.capability-panel{grid-template-columns:1.4fr 1fr;gap:16px}.capability-example,.capability-rules{padding:20px}.capability-example h3{font-size:21px}.capability-path{gap:5px}.capability-path span,.capability-path strong{font-size:10px;padding:9px 5px}.alternative-grid{grid-template-columns:1fr}.alternative-grid article{display:grid;grid-template-columns:1fr 1.6fr;gap:6px 24px}.alternative-grid h3{grid-column:1;margin:4px 0}.alternative-grid .label{grid-column:1}.alternative-grid .term{grid-column:1;min-height:0}.alternative-grid .mini-route{grid-column:2;grid-row:1/3;margin:0}.alternative-grid dl{grid-column:2;grid-row:3/5;font-size:11px;gap:8px}.alternative-grid .route-fit{grid-column:1;padding-top:8px}.phase-selector button{padding:17px}.phase-selector strong{font-size:16px}.phase-panel{padding:22px}.phase-route{gap:8px}.phase-route span{padding:12px 8px;font-size:12px}.decision-ledger{gap:16px}.decision-ledger>div{padding:20px}.decision-ledger ol{font-size:12px}.final-statement strong{font-size:15px}}
+@media(max-width:700px){.topbar{padding:10px 16px;gap:9px 10px}.brand{font-size:13px;min-width:0;white-space:normal;line-height:1.4}.brandmark{width:32px;height:32px}.brand>span:last-child{max-width:145px}.quiet{padding:8px;font-size:11px}.chapters{gap:5px}.chapters button{flex:1;justify-content:center;flex-direction:column;align-items:center;padding:6px 4px;gap:3px;font-size:11px}.chapter-count{font-size:9px}.chapter-navigation{grid-template-columns:1fr;gap:8px;padding:10px 16px}.chapter-progress{font-size:11px}.chapter-pages{gap:6px}.chapter-page{font-size:10px;padding:8px 7px}.slide{padding:24px 18px 22px;gap:16px}h1,h2{font-size:28px;line-height:1.45}.lede{font-size:13px}.eyebrow{font-size:10px}.cover{grid-template-columns:1fr;gap:24px}.cover-copy h1{margin:13px 0 17px}.cover-copy .lede{font-size:14px}.desktop-break{display:none}.definition{font-size:11px}.cover-question{padding:17px}.cover-question strong{font-size:17px}.cover-question p{font-size:11px}.takeaway{font-size:13px}.takeaway small{font-size:10px}.architecture-core{grid-template-columns:1fr;gap:20px}.arch-node:not(:last-child)::after{content:"↓";top:auto;bottom:-23px;right:calc(50% - 7px)}.arch-node{align-items:center;text-align:center;padding:12px}.arch-node strong{font-size:17px}.origin-arrow{width:100%;padding:8px}.enterprise-origin{align-items:center}.branch-label{text-align:center;margin:12px 0}.branch-lines{display:none}.capability-branches{grid-template-columns:1fr;gap:9px}.branch-card{display:grid;grid-template-columns:26px 1fr;gap:4px 10px;padding:13px 15px;text-align:left}.branch-card>.icon{grid-row:span 2}.branch-card strong{font-size:14px}.branch-card span{grid-column:1/-1;font-size:10px;margin-top:5px}.architecture-detail{grid-template-columns:1fr;gap:11px}.architecture-detail>h3,.architecture-detail>.label,.architecture-detail>p:not(.detail-source),.architecture-detail .detail-rule,.architecture-detail .detail-source{grid-column:auto;grid-row:auto}.responsibility-grid{grid-template-columns:1fr}.responsibility-grid article>.icon{display:block}.responsibility-grid h3{font-size:20px;margin:12px 0 9px}.responsibility-grid article>p{font-size:13px}.responsibility-grid ul{font-size:12px;line-height:1.9;margin-top:12px}.business-foundation{align-items:flex-start;padding:18px;gap:12px;flex-wrap:wrap}.foundation-note{margin-left:36px;font-size:10px}.business-foundation h3{font-size:17px}.business-foundation p{font-size:11px}.term-grid{grid-template-columns:1fr}.choice-row{gap:6px}.choice-row button{font-size:11px;padding:8px 10px}.identity-layout{grid-template-columns:1fr}.identity-flow li{padding:12px}.identity-flow li em{font-size:9px}.identity-flow li b{font-size:12px}.identity-detail pre{font-size:11px}.capability-selector{gap:6px}.capability-selector button{display:flex;flex-direction:column;align-items:center;text-align:center;padding:13px 5px;gap:7px}.capability-selector strong{font-size:12px}.capability-selector small{font-size:9px}.capability-selector .icon{width:21px;height:21px}.capability-panel{grid-template-columns:1fr}.capability-example h3{font-size:22px}.capability-path{gap:5px}.capability-path span,.capability-path strong{font-size:10px}.capability-rules h3{font-size:19px;margin:10px 0}.capability-rules ul{font-size:12px;margin-bottom:12px}.alternative-grid article{display:flex;padding:20px;gap:0}.alternative-grid h3{font-size:22px;margin:11px 0}.alternative-grid .mini-route{margin:15px 0}.mini-route span{font-size:11px}.alternative-grid dl{font-size:12px}.alternative-grid .route-fit{padding-top:15px}.design-note{flex-direction:column;gap:5px;font-size:11px}.phase-selector{gap:7px}.phase-selector button{padding:13px 9px;gap:7px}.phase-selector strong{font-size:13px;line-height:1.6}.phase-selector small{font-size:10px}.phase-panel{padding:20px}.phase-route{flex-direction:column;gap:6px;margin:20px 0}.phase-route span{width:100%;font-size:13px}.phase-route i{transform:rotate(90deg)}.phase-explanation{grid-template-columns:1fr;gap:18px}.phase-explanation p{font-size:12px}.decision-ledger{grid-template-columns:1fr}.decision-ledger h3{font-size:19px}.decision-ledger ol{font-size:12px;line-height:2}.final-statement{padding:20px}.final-statement strong{font-size:16px}.final-statement p{font-size:11px}.source-actions a{margin:5px 0 0;font-size:11px;width:100%}.footer{padding:10px 16px;gap:10px}.foot-label{font-size:10px}.counter{font-size:10px}.pager{gap:7px}.pager>#previous{width:36px;padding:6px}.pager>#previous>span{display:none}.pager>#next{width:180px;max-width:48vw;padding:8px 10px}.next-copy strong{font-size:11px}.next-copy small{font-size:9px}dialog{padding:20px}.dialog-head h2{font-size:21px}.original{padding:15px}.original h1{font-size:22px}body.reading .slide{padding-top:35px;padding-bottom:35px}body.reading .footer{position:static}}
+@media(max-width:380px){.brand>span:last-child{font-size:11px;max-width:115px}.actions{gap:0}.quiet{padding:7px 6px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important}}
+body:not(.reading){padding-bottom:var(--footer)}body:not(.reading) .footer{position:fixed;left:0;right:0;bottom:0;z-index:20}
+@media print{@page{size:A4;margin:14mm}body:not(.reading){padding-bottom:0}.topbar,.chapter-navigation,.footer,.source-actions,dialog,.choice-row,.capability-selector,.phase-selector{display:none!important}body{background:white}.slide,.slide[hidden]{display:flex!important;min-height:0!important;break-before:page;animation:none;padding:0 0 10mm}.slide:first-child{break-before:auto}.cover{display:grid!important;grid-template-columns:1fr 1fr;gap:20px}h1,h2{font-size:23pt}.lede{font-size:10pt}.architecture-layout{grid-template-columns:1.65fr 1fr}.architecture-detail{display:flex}.architecture-detail>*{grid-column:auto!important;grid-row:auto!important}.architecture-core{grid-template-columns:repeat(3,minmax(0,1fr))}.arch-node:not(:last-child)::after{content:"→";bottom:auto;top:calc(50% - 13px);right:-17px}.branch-lines{display:block}.branch-label{text-align:right}.capability-branches{grid-template-columns:repeat(3,minmax(0,1fr))}.branch-card{display:flex}.responsibility-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.identity-layout,.capability-panel,.decision-ledger{grid-template-columns:1fr 1fr}.alternative-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.alternative-grid article{display:flex}.phase-route{flex-direction:row}.phase-route span{width:auto}.phase-route i{transform:none}.phase-explanation{grid-template-columns:1fr 1fr}.takeaway{font-size:10pt}.takeaway small{font-size:8pt}.business-foundation,.identity-flow li,.decision-ledger>div{break-inside:avoid}.cover-question,.responsibility-grid .runtime,.final-statement{print-color-adjust:exact}button{cursor:default}details.expanded-note>div{display:block!important}.term-grid p{margin-bottom:8px}.term-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))}.original-wrapper{display:none!important}}
+
+.study-switch{position:relative;flex-shrink:0;align-self:center;margin:0;padding:0;border:0;border-radius:0;background:transparent;font-family:inherit;color:#172b45;line-height:1.5}.study-switch>summary{list-style:none;display:flex;align-items:center;gap:7px;cursor:pointer;padding:8px 10px;border:1px solid #d4dfed;background:#f8faff;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap;width:auto;color:#294f83}.study-switch>summary::-webkit-details-marker{display:none}.study-switch>summary svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6}.study-switch>summary i{font-style:normal;color:#7b8ba3;font-size:14px}.study-switch[open]>summary{background:#eaf1ff;border-color:#8dadde}.study-switch>nav{position:absolute;right:0;top:calc(100% + 10px);z-index:100;width:282px;max-width:calc(100vw - 24px);padding:7px;background:#fff;border:1px solid #d6e1ee;border-radius:12px;box-shadow:0 15px 45px #162f5129;text-align:left;white-space:normal}.study-switch>nav a{display:block;position:relative;text-decoration:none;color:#203753;border-radius:7px;padding:12px 45px 12px 13px}.study-switch>nav a:hover,.study-switch>nav a:focus-visible{background:#f0f5fd}.study-switch>nav a[aria-current=page]{background:#eaf1ff;color:#275dd9}.study-switch b{display:block;font-size:13px;line-height:1.5;font-weight:650}.study-switch small{display:block!important;font-size:11px!important;line-height:1.6!important;color:#6d7f96!important;font-weight:400!important;letter-spacing:0!important;margin-top:3px!important}.study-switch em{position:absolute;right:12px;top:15px;font-style:normal;font-size:10px;color:#4770a9}.study-switch>summary:focus-visible{outline:3px solid #4885ff;outline-offset:3px}.topbar:has(.study-switch){z-index:40;position:relative}body .topbar:has(.progress){position:fixed}.top-actions .study-switch{margin-right:2px}.actions .study-switch{margin-right:5px}@media(max-width:760px){.study-switch>summary{padding:8px;gap:0}.study-switch>summary span,.study-switch>summary i{display:none}.study-switch>nav{position:fixed;top:60px;right:12px;width:282px;max-height:calc(100dvh - 80px);overflow:auto}.top-actions .study-switch{margin-right:0}.actions .study-switch{margin-right:2px}}@media print{.study-switch{display:none!important}}
+
+.study-switch>summary::before,.study-switch>summary::after{content:none!important}.actions .quiet{white-space:nowrap}@media(max-width:1100px){.study-switch>summary{padding:8px;gap:0}.study-switch>summary span,.study-switch>summary i{display:none}}
+
+/* Match the Agent page toolbar controls without inheriting article details spacing. */
+.top-actions .study-switch>summary{min-height:41px;justify-content:center;font-size:.875rem;line-height:1.6}.top-actions .study-switch>summary svg{width:23px;height:23px}
+@media(max-width:760px){.top-actions .study-switch>summary{min-height:39px;padding:7px 9px;font-size:.8rem}}
+</style></head><body><a class="skip" href="#main">跳到正文</a>
+<svg class="symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8Zm-10 9 10 5 10-5M2 16l10 5 10-5"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9S4 17 4 12V6zM8 12l3 3 5-6"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></symbol>
+<symbol id="i-loop" viewBox="0 0 24 24"><path d="M20 10A8 8 0 0 0 6 6L3 9m0-6v6h6M4 14a8 8 0 0 0 14 4l3-3m0 6v-6h-6"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5C8 2 4 3 2 4v16c4-2 7-1 10 1 3-2 6-3 10-1V4c-2-1-6-2-10 1Zm0 0v16"/></symbol>
+<symbol id="i-data" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v7c0 4 18 4 18 0V5M3 12v7c0 4 18 4 18 0v-7"/></symbol>
+<symbol id="i-action" viewBox="0 0 24 24"><path d="M9 4H4v16h16v-5M14 3h7v7M9 15 21 3"/></symbol>
+<symbol id="i-left" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol><symbol id="i-right" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></symbol>
+</defs></svg>
+<header class="topbar">
+ <a class="brand" href="index.html"><span class="brandmark"><svg class="icon"><use href="#i-layers"/></svg></span><span>企业 Agent 集成设计<small>身份入口 · 通用执行 · 能力接入</small></span></a>
+ <nav class="chapters" aria-label="设计章节">
+  <button data-chapter="architecture" aria-current="true"><span class="chapter-name">01 总体架构</span><small class="chapter-count">共 2 页</small></button>
+  <button data-chapter="integration"><span class="chapter-name">02 身份与能力</span><small class="chapter-count">共 3 页</small></button>
+  <button data-chapter="decisions"><span class="chapter-name">03 决策与演进</span><small class="chapter-count">共 3 页</small></button>
+ </nav>
+ <div class="actions"><details class="study-switch"><summary aria-label="切换研究" title="切换研究"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>切换研究</span><i aria-hidden="true">⌄</i></summary><nav aria-label="三份研究导航"><a href="index.html" aria-label="研究导航：选择研究主题"><b>研究导航</b><small>选择研究主题</small></a><a href="agent-research.html#overview" aria-label="Agent 架构研究：技术全景与行业选型"><b>Agent 架构研究</b><small>技术全景与行业选型</small></a><a href="dsh-meeting.html#paper" aria-label="DSH 架构解析：设计理念与架构能力"><b>DSH 架构解析</b><small>设计理念与架构能力</small></a><a href="enterprise-agent.html#overview" aria-label="企业 Agent 集成设计：身份传递与业务能力接入" aria-current="page"><b>企业 Agent 集成设计</b><small>身份传递与业务能力接入</small><em>当前</em></a></nav></details><button class="quiet" id="reading" aria-pressed="false">阅读模式</button><button class="quiet" id="sources-open">设计原文</button></div>
+</header>
+<div class="chapter-navigation"><p id="chapter-progress" class="chapter-progress" aria-live="polite">总体架构 · 第 1 / 2 页</p><nav id="chapter-pages" class="chapter-pages" aria-label="总体架构的页面"></nav></div>
+<main id="main" tabindex="-1">
+<section class="slide cover" id="overview" data-chapter="architecture" data-title="设计目标" aria-labelledby="title-overview">
+ <div class="cover-copy"><p class="eyebrow">01 / 企业能力的统一接入</p><h1 id="title-overview">企业 Agent 集成架构<br>与 <em>MCP 能力接入体系</em></h1><p class="lede">复用企业已有身份、权限与业务能力，<br class="desktop-break">让通用执行底座连接多个系统与行业。</p><p class="definition">智能体（Agent）根据任务调用工具、推进执行；模型上下文协议（Model Context Protocol，MCP）为连接工具与资源提供统一接口。</p><div class="cover-tags"><span>复用已有体系</span><span>保持执行通用</span><span>能力按需扩展</span></div></div>
+ <div class="cover-diagram" aria-label="身份入口、通用执行、能力出口的三段分工">
+  <div class="cover-question"><svg class="icon"><use href="#i-user"/></svg><div><small>谁进入，能用什么？</small><strong>人工智能网关（AI Gateway）</strong><p>人工智能网关：接入企业身份与能力授权</p></div></div><span class="cover-connector" aria-hidden="true">↓</span>
+  <div class="cover-question runtime"><svg class="icon"><use href="#i-loop"/></svg><div><small>怎样完成任务？</small><strong>智能体运行时（DSH Runtime）</strong><p>DeepSeek Harness：组织模型、工具与会话</p></div></div><span class="cover-connector" aria-hidden="true">↓</span>
+  <div class="cover-question"><svg class="icon"><use href="#i-shield"/></svg><div><small>怎样受控地使用企业能力？</small><strong>能力网关（MCP Gateway）</strong><p>MCP 网关：统一工具接入、校验与调用治理</p></div></div>
+ </div>
+ <div class="takeaway"><strong>企业体系继续提供身份与业务能力，执行底座保持通用。</strong><small>设计依据：原始备忘录 §1、§2、§7。智慧粮库是可选验证场景，架构面向多行业、多系统。</small></div>
+</section>
+
+<section class="slide" id="architecture" data-chapter="architecture" data-title="目标架构图" hidden aria-labelledby="title-architecture">
+ <p class="eyebrow">02 / 目标架构</p><h2 id="title-architecture">一条调用链，<em>两个网关边界。</em></h2><p class="lede">箭头表示请求方向，结果沿调用链返回。网关是本设计中的逻辑角色，具体产品与部署方式尚未确定。</p>
+ <div class="architecture-layout">
+  <figure class="architecture-map" aria-label="企业身份进入AI网关，经DSH执行和MCP网关接入三类企业能力">
+   <div class="enterprise-origin"><span><svg class="icon"><use href="#i-user"/></svg>企业用户＋现有身份体系</span><small>已有基础：组织 · 角色 · 数据权限</small></div>
+   <div class="origin-arrow" aria-hidden="true">↓ <span>认证与身份转换</span></div>
+   <div class="architecture-core">
+    <button class="arch-node" data-architecture="ai" aria-pressed="true"><span class="node-kicker">身份入口</span><strong>AI Gateway</strong><small>认证 · 能力授权 · 会话初始化</small></button>
+    <button class="arch-node runtime" data-architecture="dsh" aria-pressed="false"><span class="node-kicker">通用执行</span><strong>DSH Runtime</strong><small>任务推进 · 工具调用 · 会话管理</small></button>
+    <button class="arch-node gateway" data-architecture="mcp" aria-pressed="false"><span class="node-kicker">能力安全出口</span><strong>MCP Gateway</strong><small>校验 · 工具权限 · 审计限流</small></button>
+   </div>
+   <div class="branch-label">MCP 网关路由到对应能力服务</div>
+   <svg class="branch-lines" viewBox="0 0 900 34" preserveAspectRatio="none" aria-hidden="true"><path d="M750 0v10H450v10M150 34V20h600v14M450 20v14"/></svg>
+   <div class="capability-branches">
+    <button class="branch-card" data-architecture="knowledge" aria-pressed="false"><svg class="icon"><use href="#i-book"/></svg><strong>知识库 MCP</strong><small>制度 · 文档 · 企业知识</small><span>↓ 知识库／文档与向量库</span></button>
+    <button class="branch-card" data-architecture="data" aria-pressed="false"><svg class="icon"><use href="#i-data"/></svg><strong>问数 MCP</strong><small>查询 · 统计 · 分析</small><span>↓ 分析服务／数据库与数仓</span></button>
+    <button class="branch-card" data-architecture="business" aria-pressed="false"><svg class="icon"><use href="#i-action"/></svg><strong>业务 MCP</strong><small>业务状态 · 操作 · 审批</small><span>↓ 业务服务／系统接口</span></button>
+   </div>
+   <figcaption>点击组件查看职责。图示描述目标分工，不表示已经完成集成。</figcaption>
+  </figure>
+  <aside class="architecture-detail" aria-live="polite"><span class="label" id="architecture-label">身份入口</span><h3 id="architecture-detail-title">AI Gateway</h3><p id="architecture-detail-description">确认企业用户是谁，将既有身份转换为智能体可使用的身份上下文，并限定可使用的能力。</p><div class="detail-rule"><b>职责边界</b><p id="architecture-detail-boundary">复用企业身份和权限来源；不另建一套与业务系统脱节的用户权限。</p></div><p class="detail-source" id="architecture-detail-source">依据：原文 §3.1</p></aside>
+ </div>
+ <div class="takeaway"><strong>接入层治理共性调用，业务服务执行数据与业务约束。</strong><small>原文 §2—§4；最终数据权限、脱敏、审批和业务规则的接口分工仍需落地明确。</small></div>
+</section>
+
+<section class="slide" id="responsibilities" data-chapter="integration" data-title="职责边界" hidden aria-labelledby="title-responsibilities">
+ <p class="eyebrow">03 / 职责划分</p><h2 id="title-responsibilities">入口管身份，执行层管任务，<br><em>出口管调用。</em></h2>
+ <div class="responsibility-grid">
+  <article><span class="label">进入智能体之前</span><svg class="icon"><use href="#i-user"/></svg><h3>AI Gateway</h3><p>谁能进入，能使用哪些能力。</p><ul><li>用户认证与身份转换</li><li>智能体能力授权</li><li>会话初始化、用户行为审计</li></ul></article>
+  <article class="runtime"><span class="label">任务执行过程中</span><svg class="icon"><use href="#i-loop"/></svg><h3>DSH Runtime</h3><p>在获准范围内组织执行。</p><ul><li>任务规划与推进</li><li>插件、技能与工具调用</li><li>会话记录与管理</li></ul></article>
+  <article><span class="label">调用企业能力之前</span><svg class="icon"><use href="#i-shield"/></svg><h3>MCP Gateway</h3><p>本次调用哪个工具，是否获准。</p><ul><li>身份凭据校验、工具权限</li><li>按策略检查声明的范围</li><li>调用审计、限流与安全策略</li></ul></article>
+ </div>
+ <div class="business-foundation"><svg class="icon"><use href="#i-data"/></svg><div><span class="label">复用已有业务系统</span><h3>数据与业务约束继续生效</h3><p>组织与数据权限 · 数据脱敏 · 操作授权 · 审批权限 · 业务规则</p></div><span class="foundation-note">具体检查落点与接口契约<br>仍需确认</span></div>
+ <details class="expanded-note"><summary>插件、技能、工具和会话，在本设计中分别指什么？</summary><div class="term-grid"><p><b>插件（Plugin）</b>装配可扩展能力与业务连接。</p><p><b>技能（Skill）</b>提供专业方法、指令和参考内容。</p><p><b>工具（Tool）</b>执行具体查询、计算或业务动作。</p><p><b>会话（Session）</b>组织一段用户交互及其执行上下文。</p></div></details>
+ <div class="takeaway"><strong>企业权限由可信网关与业务服务承接，DSH 保持通用。</strong><small>原文 §3、§4。运行时的工具、插件、凭据和网络访问边界也需配置，避免绕开受控能力出口。</small></div>
+</section>
+
+<section class="slide" id="identity" data-chapter="integration" data-title="身份与调用链" hidden aria-labelledby="title-identity">
+ <p class="eyebrow">04 / 身份传递</p><h2 id="title-identity">传递可信上下文，<em>逐层作出授权判断。</em></h2><p class="lede">身份字段描述用户；凭据与可信绑定证明来源。工具参数由模型提出，身份与权限由可信服务端管理。</p>
+ <div class="choice-row" role="tablist" aria-label="身份调用示意"><button role="tab" id="identity-tab-valid" aria-controls="identity-panel" aria-selected="true" data-identity="valid">正常调用</button><button role="tab" id="identity-tab-denied" aria-controls="identity-panel" aria-selected="false" tabindex="-1" data-identity="denied">缺少工具权限</button><button role="tab" id="identity-tab-untrusted" aria-controls="identity-panel" aria-selected="false" tabindex="-1" data-identity="untrusted">仅传用户 ID</button></div>
+ <div class="identity-layout" id="identity-panel" role="tabpanel" aria-labelledby="identity-tab-valid">
+  <div><ol class="identity-flow" aria-label="身份与授权的六步示意">
+   <li data-identity-step="0"><span>1</span><div><b>企业身份体系</b><small>认证企业用户</small></div><em>已认证</em></li>
+   <li data-identity-step="1"><span>2</span><div><b>AI Gateway</b><small>身份映射、能力授权、会话初始化</small></div><em>可信映射</em></li>
+   <li data-identity-step="2"><span>3</span><div><b>DSH 与调用适配</b><small>选择工具；可信适配层绑定身份上下文</small></div><em>发起调用</em></li>
+   <li data-identity-step="3"><span>4</span><div><b>MCP Gateway</b><small>凭据、工具权限与策略检查</small></div><em>调用获准</em></li>
+   <li data-identity-step="4"><span>5</span><div><b>MCP 服务与业务系统</b><small>执行数据范围与业务规则</small></div><em>业务校验</em></li>
+   <li data-identity-step="5"><span>6</span><div><b>结果返回与审计</b><small>返回获准结果，关联调用记录</small></div><em>返回结果</em></li>
+  </ol></div>
+  <div class="identity-detail"><span class="label" id="identity-context-label">原文身份映射示例 · 用户 10086</span><pre id="identity-context">{
+  "user_id": "10086",
+  "roles": ["administrator"],
+  "permissions": [
+    "knowledge.use",
+    "data.query"
+  ]
+}</pre><p class="context-note">字段结构用于说明设计，不是 DSH 的既定接口；凭据不放入模型可修改的参数。</p><div class="identity-result" aria-live="polite"><span class="label">示意结果 · 未发起真实请求</span><h3 id="identity-result-title">通过网关，再执行业务校验</h3><p id="identity-result-description">当前身份具备数据查询能力；业务服务仍按用户的数据范围与规则执行查询。</p></div></div>
+ </div>
+ <div class="takeaway"><strong>每一跳都要保留可信用户关联，工具可见性之外仍需服务端授权。</strong><small>原文 §3、§5；可信绑定与凭据安全边界为图解整理补充。签发方、目标资源、有效期和下游认证方式尚待确定。</small></div>
+</section>
+
+<section class="slide" id="capabilities" data-chapter="integration" data-title="三类 MCP 能力" hidden aria-labelledby="title-capabilities">
+ <p class="eyebrow">05 / 能力接入</p><h2 id="title-capabilities">同一接入方式，<em>三类企业能力。</em></h2><p class="lede">按主要职责分类，不要求每类只有一个服务；现有系统继续提供能力与权限依据。</p>
+ <div class="capability-selector" role="tablist" aria-label="MCP能力分类">
+  <button role="tab" id="capability-tab-knowledge" aria-controls="capability-panel" aria-selected="true" data-capability="knowledge"><svg class="icon"><use href="#i-book"/></svg><strong>知识库 MCP</strong><small>查询制度与知识</small></button>
+  <button role="tab" id="capability-tab-data" aria-controls="capability-panel" aria-selected="false" tabindex="-1" data-capability="data"><svg class="icon"><use href="#i-data"/></svg><strong>问数 MCP</strong><small>查询与分析数据</small></button>
+  <button role="tab" id="capability-tab-business" aria-controls="capability-panel" aria-selected="false" tabindex="-1" data-capability="business"><svg class="icon"><use href="#i-action"/></svg><strong>业务 MCP</strong><small>业务状态与操作</small></button>
+ </div>
+ <div class="capability-panel" id="capability-panel" role="tabpanel" aria-labelledby="capability-tab-knowledge">
+  <div class="capability-example"><span class="label">业务问题示意</span><h3 id="capability-question">“安全生产管理制度是什么？”</h3><div class="capability-path"><span>DSH</span><i>→</i><span>MCP 网关</span><i>→</i><strong id="capability-service">知识库 MCP</strong></div><div class="connected-system"><span class="label">连接已有能力</span><b id="capability-system">知识库系统 · 文档库 · 向量数据库</b><p id="capability-output">检索相关文档，返回可引用的知识内容。</p></div></div>
+  <aside class="capability-rules"><span class="label">继承既有规则</span><h3 id="capability-rules-title">知识访问范围</h3><ul id="capability-rules"><li>用户可访问的知识与文档范围</li><li>既有知识库的访问策略</li></ul><p id="capability-boundary">通常不直接连接业务数据库；具体接法依据已有知识系统。</p></aside>
+ </div>
+ <div class="takeaway"><strong>标准化连接，保留不同能力的业务含义和权限约束。</strong><small>原文 §4。知识访问策略为整理补充；问数的数据权限、组织范围、脱敏及业务操作与审批规则来自原文。</small></div>
+</section>
+
+<section class="slide" id="alternatives" data-chapter="decisions" data-title="接入方案取舍" hidden aria-labelledby="title-alternatives">
+ <p class="eyebrow">06 / 方案取舍</p><h2 id="title-alternatives">从快速接入，<em>走向集中治理。</em></h2><p class="lede">原文比较三种组织方式：目标采用 MCP Gateway；前两种方式作为验证与中间阶段选项。</p>
+ <div class="alternative-grid">
+  <article><span class="label">方案一 · 快速验证</span><h3>工具元信息</h3><p class="term">工具调用元信息（Tool Metadata）携带用户字段。</p><div class="mini-route"><span>DSH</span><i>→</i><span>用户字段</span><i>→</i><span>MCP</span></div><dl><dt>收益</dt><dd>实现简单，开发成本低。</dd><dt>代价</dt><dd>字段的可信来源须另行建立；治理容易分散。</dd></dl><p class="route-fit">适合受控的概念验证（Proof of Concept，PoC）：先验证能力能否接通。</p></article>
+  <article><span class="label">方案二 · 中间阶段</span><h3>访问令牌</h3><p class="term">访问令牌（Access Token）承载目标资源的调用授权。</p><div class="mini-route"><span>AI 网关</span><i>→</i><span>凭据适配</span><i>→</i><span>MCP</span></div><dl><dt>收益</dt><dd>可衔接企业服务认证方式。</dd><dt>代价</dt><dd>各服务仍需校验目标资源、权限与有效期；治理较分散。</dd></dl><p class="route-fit">原文称“Authorization Token 透传”；实际凭据机制仍待确定。</p></article>
+  <article class="selected"><span class="label">方案三 · 目标采用</span><h3>MCP Gateway</h3><p class="term">将多能力服务的共性调用治理集中到出口。</p><div class="mini-route"><span>DSH</span><i>→</i><span>MCP 网关</span><i>→</i><span>多 MCP</span></div><dl><dt>收益</dt><dd>统一校验、工具授权、审计与限流。</dd><dt>代价</dt><dd>增加网关建设、部署与运维复杂度。</dd></dl><p class="route-fit">适合多系统接入与统一治理的目标方向。</p></article>
+ </div>
+ <div class="design-note"><b>两个不同维度</b><span>令牌是身份凭据，网关是治理落点；Gateway 方案仍可使用令牌。目标资源凭据须正确校验，不能把面向其他服务的令牌直接原样转发。</span></div>
+ <div class="takeaway"><strong>本设计选择集中治理，同时保留分阶段接入路径。</strong><small>原文 §5；令牌与网关的维度区分、安全限定为整理补充，官方依据见“设计原文与补充依据”。</small></div>
+</section>
+
+<section class="slide" id="evolution" data-chapter="decisions" data-title="三阶段演进" hidden aria-labelledby="title-evolution">
+ <p class="eyebrow">07 / 分阶段建设</p><h2 id="title-evolution">先验证接通，<em>再按需求增加治理。</em></h2><p class="lede">以下为演进设计，不表示当前实施进度；目标架构与每一期的建设范围分别表达。</p>
+ <div class="phase-selector" role="tablist" aria-label="架构演进阶段">
+  <button role="tab" id="phase-tab-connect" aria-controls="phase-panel" aria-selected="true" data-phase="connect"><span>01</span><strong>能力接入验证</strong><small>先接通已有能力</small></button>
+  <button role="tab" id="phase-tab-govern" aria-controls="phase-panel" aria-selected="false" tabindex="-1" data-phase="govern"><span>02</span><strong>企业化治理</strong><small>增加集中能力出口</small></button>
+  <button role="tab" id="phase-tab-platform" aria-controls="phase-panel" aria-selected="false" tabindex="-1" data-phase="platform"><span>03</span><strong>行业 Agent 平台</strong><small>面向多行业、多系统</small></button>
+ </div>
+ <div class="phase-panel" id="phase-panel" role="tabpanel" aria-labelledby="phase-tab-connect"><span class="label" id="phase-label">第一阶段 · 目标：验证企业能力可被调用</span><div class="phase-route" id="phase-route"><span>AI Gateway</span><i>→</i><span>DSH Runtime</span><i>→</i><span>知识库／问数 MCP</span></div><div class="phase-explanation"><div><h3 id="phase-focus-title">重点验证接入链路</h3><p id="phase-focus">身份接入、插件加载、知识库调用和问数调用。</p></div><div><h3>落地需要明确</h3><p id="phase-boundary">第一阶段尚未增加 MCP Gateway；身份校验、工具授权和调用审计仍要有承载位置，具体分工待确认。</p></div></div></div>
+ <div class="takeaway"><strong>第一阶段直连验证，第二阶段引入网关，与最终目标一致。</strong><small>原文 §6。阶段进入条件、产品选型、部署方式与验收标准尚未确定。</small></div>
+</section>
+
+<section class="slide" id="decisions" data-chapter="decisions" data-title="设计决策与未定项" hidden aria-labelledby="title-decisions">
+ <p class="eyebrow">08 / 决策归纳</p><h2 id="title-decisions">架构方向已选，<em>实现契约仍需明确。</em></h2>
+ <div class="decision-ledger"><div class="settled"><span class="label">备忘录已确定</span><h3>保留清楚的职责边界</h3><ol><li>AI Gateway 复用企业身份，承接能力授权。</li><li>DSH 保持通用执行，行业能力通过扩展接入。</li><li>MCP Gateway 作为目标架构的安全出口。</li><li>知识库、问数、业务 MCP 连接各自已有系统。</li><li>按接入验证、企业治理、行业平台逐步演进。</li></ol></div><div class="pending"><span class="label">落地待确认 · 根据原文边界整理</span><h3>把职责落到接口与验收</h3><ol><li>两个网关复用什么产品，哪些能力需要自建？</li><li>身份映射、凭据签发与会话绑定如何实现？</li><li>网关到下游采用什么可信认证与授权方式？</li><li>首期授权审计、最终业务检查分别由谁执行？</li><li>写操作、审批、失败重试与重复操作如何控制？</li></ol></div></div>
+ <div class="final-statement"><span>目标架构</span><strong>AI Gateway <i>→</i> DSH Runtime <i>→</i> MCP Gateway <i>→</i> 企业能力体系</strong><p>预期复用企业基础能力，形成可扩展的接入与治理体系；集成、安全和业务效果尚需验证。</p></div>
+ <div class="source-actions"><button class="button primary sources-trigger">设计原文与补充依据</button><button class="button" id="print-page" title="打印八个主题，交互图示保留当前选择">打印图示</button><a href="agent-research.html#q10">回看通用选型方法 ↗</a></div>
+ <div class="takeaway"><strong>目标职责已经明确，具体接口与安全边界通过原型验证落实。</strong><small>原文 §7；待确认项与安全边界为整理补充，没有替代产品选型或真实集成验证。</small></div>
+</section>
+</main>
+<footer class="footer"><div class="page-position"><span class="foot-label" id="foot-label">设计目标</span><span class="counter" id="counter">全篇 01 / 08</span></div><div class="pager"><button id="previous" aria-label="上一页"><svg class="icon" aria-hidden="true"><use href="#i-left"/></svg><span>上一页</span></button><button id="next" aria-label="本章下一页：目标架构图"><span class="next-copy"><small id="next-kind">本章下一页</small><strong id="next-title">目标架构图</strong></span><svg class="icon" aria-hidden="true"><use href="#i-right"/></svg></button></div></footer>
+<dialog id="sources" aria-labelledby="sources-title"><div class="dialog-head"><div><span class="label">原始设计与整理边界</span><h2 id="sources-title">设计原文与补充依据</h2></div><button class="button" id="sources-close" aria-label="关闭设计原文">关闭</button></div><p>主体图解依据《企业 Agent 集成架构与 MCP 能力接入体系设计决策备忘录》。原文保留；身份可信绑定、目标资源凭据、最终业务检查和待确认项属于图解整理补充。</p><div class="reference-links"><a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization" target="_blank" rel="noopener noreferrer">MCP 授权规范 ↗</a><a href="https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices#token-passthrough" target="_blank" rel="noopener noreferrer">令牌传递安全边界 ↗</a><a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/SAFETY.md" target="_blank" rel="noopener noreferrer">DSH 安全说明 ↗</a></div><p class="source-date">图解整理与补充资料核对：2026-10-29。交互为本地静态示意，不访问企业系统、不调用真实模型、不执行真实授权。</p><details class="original-wrapper"><summary>展开完整设计原文</summary><div class="original"><h1 id="original-enterprise-1">企业 Agent 集成架构与 MCP 能力接入体系设计决策备忘录</h1>
+<h2 id="original-enterprise-2">1. 背景与目标</h2>
+<p>随着 DeepSeek Harness（DSH）作为通用 Agent
+Runtime（智能体运行时环境）引入企业应用体系，需要解决现有业务系统能力如何接入
+Agent，以及企业用户身份和权限如何安全传递的问题。</p>
+<p>企业已有系统通常已经具备：</p>
+<ul>
+<li>用户身份体系</li>
+<li>组织体系</li>
+<li>角色权限体系</li>
+<li>数据权限体系</li>
+<li>知识库能力</li>
+<li>数据分析能力</li>
+<li>业务操作能力</li>
+</ul>
+<p>本方案目标：</p>
+<ol>
+<li>让企业用户能够通过 Agent 使用已有业务能力；</li>
+<li>复用企业现有身份和权限体系；</li>
+<li>通过 Plugin、Skill、MCP 等方式封装业务能力；</li>
+<li>保持 DSH 作为通用 Agent Runtime，不绑定具体业务；</li>
+<li>支撑未来多行业、多系统接入。</li>
+</ol>
+<p>本方案不是针对单一业务系统的定制方案，而是一套企业 Agent
+接入架构。智慧粮库等具体系统可作为该架构的落地验证场景。</p>
+<hr>
+<h1 id="original-enterprise-3">2. 架构决策结论</h1>
+<p>采用：</p>
+<blockquote>
+<p>AI Gateway + DSH Runtime + MCP Gateway 的企业 Agent 集成架构</p>
+</blockquote>
+<p>整体架构：</p>
+<pre><code>                         企业用户
+                             |
+                             |
+                  企业业务系统身份体系
+                             |
+                             |
+                        AI Gateway
+                             |
+              用户身份 + Agent能力授权
+                             |
+                             |
+                       DSH Runtime
+                             |
+                 Plugin / Skill / Agent
+                             |
+                             |
+                       MCP Gateway
+                             |
+        ------------------------------------------------
+        |                     |                       |
+    知识库MCP              问数MCP              业务MCP
+        |                     |                       |
+        |                     |                       |
+  知识库系统             数据分析系统            业务系统/API
+  文档/向量库            数据库/数仓             数据库/服务
+</code></pre>
+<hr>
+<h1 id="original-enterprise-4">3. 核心职责划分</h1>
+<h2 id="original-enterprise-5">3.1 AI Gateway</h2>
+<p>定位：</p>
+<blockquote>
+<p>企业用户进入 Agent 世界的身份入口</p>
+</blockquote>
+<p>负责：</p>
+<ul>
+<li>用户认证</li>
+<li>业务用户身份转换为 Agent Identity</li>
+<li>Agent 能力授权</li>
+<li>Session 初始化</li>
+<li>用户行为审计</li>
+</ul>
+<p>示例：</p>
+<p>企业用户：</p>
+<pre><code>用户ID:
+10086
+
+角色:
+业务管理员
+
+权限:
+知识库访问
+数据查询
+</code></pre>
+<p>转换为：</p>
+<pre><code class="language-json">{
+  &quot;user_id&quot;: &quot;10086&quot;,
+  &quot;roles&quot;: [
+    &quot;administrator&quot;
+  ],
+  &quot;permissions&quot;: [
+    &quot;knowledge.use&quot;,
+    &quot;data.query&quot;
+  ]
+}
+</code></pre>
+<hr>
+<h2 id="original-enterprise-6">3.2 DSH Runtime</h2>
+<p>定位：</p>
+<blockquote>
+<p>Agent 执行引擎</p>
+</blockquote>
+<p>负责：</p>
+<ul>
+<li>Agent 任务规划</li>
+<li>Plugin 加载</li>
+<li>Skill 执行</li>
+<li>Tool 调用</li>
+<li>Session 管理</li>
+</ul>
+<p>不负责：</p>
+<ul>
+<li>企业用户权限判断</li>
+<li>业务数据权限判断</li>
+<li>业务授权逻辑</li>
+</ul>
+<p>原则：</p>
+<blockquote>
+<p>DSH 负责执行 Agent，不负责管理企业业务权限。</p>
+</blockquote>
+<hr>
+<h2 id="original-enterprise-7">3.3 MCP Gateway</h2>
+<p>定位：</p>
+<blockquote>
+<p>Agent 调用企业能力的安全出口</p>
+</blockquote>
+<p>负责：</p>
+<ul>
+<li>MCP 请求统一入口</li>
+<li>用户身份透传</li>
+<li>Token 校验</li>
+<li>工具权限控制</li>
+<li>调用审计</li>
+<li>限流和安全策略</li>
+</ul>
+<p>例如：</p>
+<p>Agent 调用：</p>
+<pre><code>query_business_data()
+</code></pre>
+<p>MCP Gateway 判断：</p>
+<pre><code>当前用户是谁？
+是否拥有该工具权限？
+是否允许访问对应范围？
+</code></pre>
+<p>通过后调用实际 MCP 服务。</p>
+<hr>
+<h1 id="original-enterprise-8">4. MCP 能力分类设计</h1>
+<h2 id="original-enterprise-9">4.1 知识库 MCP</h2>
+<p>定位：</p>
+<p>企业知识能力。</p>
+<p>连接：</p>
+<pre><code>知识库系统
+文档库
+向量数据库
+</code></pre>
+<p>适用于：</p>
+<ul>
+<li>制度查询</li>
+<li>文档检索</li>
+<li>企业知识问答</li>
+</ul>
+<p>通常不直接连接业务数据库。</p>
+<p>示例：</p>
+<p>用户：</p>
+<pre><code>安全生产管理制度是什么？
+</code></pre>
+<p>流程：</p>
+<pre><code>Agent
+ |
+知识库 MCP
+ |
+知识检索
+ |
+返回知识内容
+</code></pre>
+<hr>
+<h2 id="original-enterprise-10">4.2 问数 MCP</h2>
+<p>定位：</p>
+<p>企业数据分析能力。</p>
+<p>连接：</p>
+<pre><code>业务数据库
+数据仓库
+数据分析服务
+</code></pre>
+<p>适用于：</p>
+<ul>
+<li>自然语言查询</li>
+<li>数据统计</li>
+<li>数据分析</li>
+<li>报表生成</li>
+</ul>
+<p>需要继承：</p>
+<ul>
+<li>数据权限</li>
+<li>组织范围</li>
+<li>数据脱敏规则</li>
+</ul>
+<hr>
+<h2 id="original-enterprise-11">4.3 业务 MCP</h2>
+<p>定位：</p>
+<p>企业业务操作能力。</p>
+<p>连接：</p>
+<pre><code>业务系统 API
+业务数据库
+业务服务
+</code></pre>
+<p>适用于：</p>
+<ul>
+<li>查询业务状态</li>
+<li>提交业务操作</li>
+<li>发起流程审批</li>
+</ul>
+<p>需要继承：</p>
+<ul>
+<li>操作权限</li>
+<li>审批权限</li>
+<li>业务规则</li>
+</ul>
+<hr>
+<h1 id="original-enterprise-12">5. 未采用方案对比</h1>
+<h2 id="original-enterprise-13">方案一：Tool Metadata 注入用户信息</h2>
+<p>架构：</p>
+<pre><code>用户
+ |
+DSH
+ |
+Tool Metadata
+ |
+MCP
+</code></pre>
+<p>方式：</p>
+<p>Tool 调用携带：</p>
+<pre><code class="language-json">{
+  &quot;user_id&quot;: &quot;10086&quot;
+}
+</code></pre>
+<p>优点：</p>
+<ul>
+<li>实现简单</li>
+<li>开发成本低</li>
+<li>适合快速验证</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>MCP 难以判断身份可信来源</li>
+<li>每个 MCP 需要重复实现权限逻辑</li>
+<li>不利于多系统平台化</li>
+</ul>
+<p>结论：</p>
+<p>适合作为 PoC 验证方案。</p>
+<hr>
+<h2 id="original-enterprise-14">方案二：Authorization Token 透传</h2>
+<p>架构：</p>
+<pre><code>AI Gateway
+
+↓
+
+Token
+
+↓
+
+DSH
+
+↓
+
+MCP
+</code></pre>
+<p>方式：</p>
+<p>HTTP Header：</p>
+<pre><code>Authorization:
+Bearer Token
+</code></pre>
+<p>优点：</p>
+<ul>
+<li>符合企业微服务认证模式</li>
+<li>安全性较高</li>
+<li>支持跨系统认证</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>每个 MCP 需要验证 Token</li>
+<li>权限治理分散</li>
+<li>多 MCP 场景维护成本增加</li>
+</ul>
+<p>结论：</p>
+<p>适合作为中间阶段方案。</p>
+<hr>
+<h2 id="original-enterprise-15">方案三：MCP Gateway（采用）</h2>
+<p>架构：</p>
+<pre><code>DSH
+
+↓
+
+MCP Gateway
+
+↓
+
+多个 MCP 服务
+</code></pre>
+<p>优点：</p>
+<h3 id="original-enterprise-16">统一安全治理</h3>
+<p>集中处理：</p>
+<ul>
+<li>身份验证</li>
+<li>权限控制</li>
+<li>审计</li>
+<li>限流</li>
+</ul>
+<h3 id="original-enterprise-17">MCP 服务职责清晰</h3>
+<p>MCP 只负责：</p>
+<blockquote>
+<p>提供业务能力</p>
+</blockquote>
+<p>不负责：</p>
+<blockquote>
+<p>企业身份管理</p>
+</blockquote>
+<h3 id="original-enterprise-18">支撑平台化扩展</h3>
+<p>未来可接入：</p>
+<ul>
+<li>知识库 MCP</li>
+<li>问数 MCP</li>
+<li>ERP MCP</li>
+<li>CRM MCP</li>
+<li>财务 MCP</li>
+</ul>
+<hr>
+<p>缺点：</p>
+<ul>
+<li>增加系统组件</li>
+<li>增加部署复杂度</li>
+<li>需要建设网关能力</li>
+</ul>
+<hr>
+<h1 id="original-enterprise-19">6. 演进路线</h1>
+<h2 id="original-enterprise-20">第一阶段：能力接入验证</h2>
+<p>目标：</p>
+<p>验证企业能力被 Agent 调用。</p>
+<p>架构：</p>
+<pre><code>AI Gateway
+
++
+
+DSH Runtime
+
++
+
+MCP
+</code></pre>
+<p>重点：</p>
+<ul>
+<li>身份接入</li>
+<li>Plugin 加载</li>
+<li>知识库调用</li>
+<li>问数调用</li>
+</ul>
+<hr>
+<h2 id="original-enterprise-21">第二阶段：企业化治理</h2>
+<p>增加：</p>
+<pre><code>MCP Gateway
+</code></pre>
+<p>统一管理：</p>
+<ul>
+<li>MCP 权限</li>
+<li>工具调用审计</li>
+<li>安全策略</li>
+</ul>
+<hr>
+<h2 id="original-enterprise-22">第三阶段：行业 Agent 平台</h2>
+<p>形成：</p>
+<pre><code>企业用户
+
+↓
+
+AI Gateway
+
+↓
+
+Agent Runtime
+
+↓
+
+MCP Gateway
+
+↓
+
+行业能力生态
+</code></pre>
+<p>支持不同企业系统和行业场景接入。</p>
+<hr>
+<h1 id="original-enterprise-23">7. 最终决策</h1>
+<p>采用：</p>
+<blockquote>
+<p>企业业务系统通过 AI Gateway 提供用户身份和 Agent 能力授权，DSH
+作为通用 Agent Runtime 执行智能任务，MCP Gateway
+作为企业能力安全出口，知识库 MCP、问数 MCP、业务 MCP
+分别连接对应企业能力系统。</p>
+</blockquote>
+<p>该架构实现：</p>
+<ul>
+<li>企业身份体系复用</li>
+<li>Agent 能力插件化扩展</li>
+<li>MCP 标准化接入</li>
+<li>工具调用安全治理</li>
+<li>面向多行业、多系统的 Agent 平台演进能力</li>
+</ul>
+</div></details></dialog>
+<script>(() => {
+'use strict';
+const slides = [...document.querySelectorAll('.slide')];
+const chapterButtons = [...document.querySelectorAll('.chapters button')];
+const chapterPages = document.querySelector('#chapter-pages');
+const chapterProgress = document.querySelector('#chapter-progress');
+const previous = document.querySelector('#previous');
+const next = document.querySelector('#next');
+const chapters = chapterButtons.map(button => {
+  const pages = slides.map((slide, i) => ({slide, i})).filter(page => page.slide.dataset.chapter === button.dataset.chapter);
+  const name = button.querySelector('.chapter-name').textContent.replace(/^\d+\s+/, '');
+  button.querySelector('.chapter-count').textContent = '共 ' + pages.length + ' 页';
+  button.setAttribute('aria-label', button.querySelector('.chapter-name').textContent + '，共 ' + pages.length + ' 页');
+  return {id:button.dataset.chapter, name, pages, button};
+});
+const pageButtons = slides.map((slide, i) => {
+  const chapter = chapters.find(item => item.id === slide.dataset.chapter);
+  const pageNumber = chapter.pages.findIndex(page => page.i === i)+1;
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'chapter-page';
+  button.textContent = pageNumber + '  ' + slide.dataset.title;
+  button.setAttribute('aria-label', chapter.name + '，第 ' + pageNumber + ' 页：' + slide.dataset.title);
+  button.addEventListener('click', () => go(i));
+  chapterPages.append(button);
+  return button;
+});
+let index = 0;
+let reading = false;
+const wheelGesture = {lastTime:-Infinity, direction:0, distance:0, scrolled:false, paged:false, lockedUntil:0};
+function blockWheelNavigation() {
+  wheelGesture.distance = 0;
+  wheelGesture.scrolled = true;
+  wheelGesture.paged = true;
+  wheelGesture.lockedUntil = performance.now() + 700;
+}
+
+function go(target, updateHash = true) {
+  if (target < 0) return;
+  blockWheelNavigation();
+  index = Math.max(0, Math.min(slides.length-1, target));
+  const current = slides[index];
+  const chapter = chapters.find(item => item.id === current.dataset.chapter);
+  const chapterIndex = chapter.pages.findIndex(page => page.i === index);
+  const focused = document.activeElement;
+  const focusInHiddenContent = !reading && slides.some(slide => slide !== current && slide.contains(focused));
+  const focusInPages = chapterPages.contains(focused);
+  slides.forEach((slide, i) => { slide.hidden = !reading && i !== index; });
+  chapters.forEach(item => item.button.setAttribute('aria-current', String(item === chapter)));
+  pageButtons.forEach((button, i) => {
+    button.hidden = slides[i].dataset.chapter !== chapter.id;
+    button.setAttribute('aria-current', i === index ? 'page' : 'false');
+  });
+  chapterPages.style.setProperty('--chapter-pages', chapter.pages.length);
+  chapterPages.setAttribute('aria-label', chapter.name + '的页面');
+  chapterProgress.textContent = chapter.name + ' · 第 ' + (chapterIndex+1) + ' / ' + chapter.pages.length + ' 页';
+  document.querySelector('#counter').textContent = '全篇 ' + String(index+1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
+  document.querySelector('#foot-label').textContent = current.dataset.title;
+  previous.disabled = index === 0;
+  previous.setAttribute('aria-label', index > 0 ? '上一页：' + slides[index-1].dataset.title : '已经是第一页');
+  next.disabled = index === slides.length-1;
+  const following = slides[index+1];
+  const nextKind = following ? (following.dataset.chapter === chapter.id ? '本章下一页' : '下一章') : '全篇结束';
+  const nextTitle = following ? following.dataset.title : '已到最后一页';
+  document.querySelector('#next-kind').textContent = nextKind;
+  document.querySelector('#next-title').textContent = nextTitle;
+  next.setAttribute('aria-label', nextKind + '：' + nextTitle);
+  if (updateHash && location.hash !== '#' + current.id) history.replaceState(null, '', '#' + current.id);
+  if (focusInHiddenContent || focusInPages) pageButtons[index].focus({preventScroll:true});
+  if (reading) current.scrollIntoView({behavior:'instant', block:'start'});
+  else window.scrollTo({top:0, behavior:'instant'});
+  window.dispatchEvent(new Event('enterprise-slide-change'));
+}
+previous.addEventListener('click', () => go(index-1));
+next.addEventListener('click', () => go(index+1));
+chapters.forEach(chapter => chapter.button.addEventListener('click', () => go(chapter.pages[0].i)));
+chapterPages.addEventListener('keydown', event => {
+  if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key) || event.altKey || event.ctrlKey || event.metaKey) return;
+  const chapter = chapters.find(item => item.id === slides[index].dataset.chapter);
+  const focusedIndex = pageButtons.findIndex(button => button.contains(event.target));
+  const local = chapter.pages.findIndex(page => page.i === (focusedIndex < 0 ? index : focusedIndex));
+  const target = event.key === 'Home' ? 0 : event.key === 'End' ? chapter.pages.length-1 : Math.max(0, Math.min(chapter.pages.length-1, local + (event.key === 'ArrowRight' ? 1 : -1)));
+  event.preventDefault();
+  event.stopPropagation();
+  go(chapter.pages[target].i);
+});
+
+document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => go(slides.findIndex(slide => slide.id === button.dataset.go))));
+document.querySelector('#reading').addEventListener('click', event => {
+  reading = !reading;
+  document.body.classList.toggle('reading', reading);
+  event.currentTarget.setAttribute('aria-pressed', String(reading));
+  event.currentTarget.textContent = reading ? '逐页模式' : '阅读模式';
+  go(index);
+});
+const dialog = document.querySelector('#sources');
+document.querySelector('#sources-open').addEventListener('click', () => dialog.showModal());
+document.querySelector('#sources-close').addEventListener('click', () => dialog.close());
+dialog.addEventListener('click', event => { if (event.target === dialog) { const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close(); } });
+document.addEventListener('keydown', event => {
+  if (reading || document.querySelector('dialog[open]') || event.altKey || event.ctrlKey || event.metaKey || /INPUT|TEXTAREA|SELECT/.test(event.target.tagName) || event.target.isContentEditable || event.target.closest('.study-switch, [role="tablist"]')) return;
+  if (event.key === 'ArrowRight' || event.key === 'PageDown') { event.preventDefault(); go(index+1); }
+  if (event.key === 'ArrowLeft' || event.key === 'PageUp') { event.preventDefault(); go(index-1); }
+  if (event.key === 'Home') { event.preventDefault(); go(0); }
+  if (event.key === 'End') { event.preventDefault(); go(slides.length-1); }
+});
+// Preserve scrolling inside long pages; only a fresh gesture at an edge changes pages.
+function canScrollVertically(target, direction) {
+  const root = document.scrollingElement || document.documentElement;
+  for (let element = target; element && element !== root && element !== document.body; element = element.parentElement) {
+    const overflow = getComputedStyle(element).overflowY;
+    if (/(auto|scroll|overlay)/.test(overflow) && element.scrollHeight > element.clientHeight + 2) {
+      if (direction > 0 ? element.scrollTop + element.clientHeight < element.scrollHeight - 2 : element.scrollTop > 2) return true;
+    }
+  }
+  return direction > 0 ? root.scrollTop + root.clientHeight < root.scrollHeight - 2 : root.scrollTop > 2;
+}
+document.addEventListener('wheel', event => {
+  const now = performance.now();
+  const target = event.target instanceof Element ? event.target : event.target.parentElement;
+  if (reading || event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey ||
+      !target || target.closest('input, textarea, select, [contenteditable], .study-switch, dialog, iframe') ||
+      document.querySelector('dialog[open], .study-switch[open]') || Math.abs(event.deltaX) > Math.abs(event.deltaY) || !event.deltaY) {
+    wheelGesture.distance = 0;
+    wheelGesture.scrolled = true;
+    wheelGesture.lastTime = now;
+    return;
+  }
+  const direction = Math.sign(event.deltaY);
+  const freshGesture = now - wheelGesture.lastTime > 220;
+  if (freshGesture) {
+    wheelGesture.distance = 0;
+    wheelGesture.scrolled = false;
+    wheelGesture.paged = false;
+  } else if (direction !== wheelGesture.direction) {
+    wheelGesture.distance = 0;
+  }
+  wheelGesture.direction = direction;
+  wheelGesture.lastTime = now;
+  if (wheelGesture.paged || now < wheelGesture.lockedUntil) {
+    wheelGesture.paged = true;
+    wheelGesture.distance = 0;
+    if (event.cancelable) event.preventDefault();
+    return;
+  }
+  if (canScrollVertically(target, direction)) {
+    wheelGesture.distance = 0;
+    wheelGesture.scrolled = true;
+    return;
+  }
+  // Do not turn the tail of a content scroll into an accidental page change.
+  if (wheelGesture.scrolled || !event.cancelable) return;
+  const destination = index + direction;
+  if (destination < 0 || destination >= slides.length) {
+    wheelGesture.distance = 0;
+    return;
+  }
+  event.preventDefault();
+  const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+  wheelGesture.distance += Math.abs(event.deltaY) * unit;
+  if (wheelGesture.distance >= 80) go(destination);
+}, {passive:false});
+document.addEventListener('toggle', event => {
+  if (event.target.matches('.study-switch, dialog')) blockWheelNavigation();
+}, true);
+
+function hashNavigation() { if (location.hash === '#main' && pageButtons.some(button => button.getAttribute('aria-current') === 'page')) return; const target = slides.findIndex(slide => `#${slide.id}` === location.hash); go(target < 0 ? 0 : target, false); }
+window.addEventListener('hashchange', hashNavigation);
+
+document.querySelectorAll('.sources-trigger').forEach(button => button.addEventListener('click', () => dialog.showModal()));
+document.querySelector('#print-page').addEventListener('click', () => window.print());
+
+const architecture = {
+ ai: ['身份入口','AI Gateway','确认企业用户是谁，将既有身份转换为智能体可使用的身份上下文，并限定可使用的能力。','复用企业身份和权限来源；不另建一套与业务系统脱节的用户权限。','原文 §3.1'],
+ dsh: ['通用执行','DSH Runtime','运行时（Runtime）组织任务推进、插件加载、技能使用、工具调用与会话管理。','不承接企业业务授权；受控工具、凭据与网络边界仍需配置。','原文 §3.2；运行边界为整理补充'],
+ mcp: ['能力安全出口','MCP Gateway','校验可信身份上下文，检查本次工具调用的权限，并承接审计、限流和安全策略。','网关检查共性调用策略；最终数据范围、脱敏和业务规则需由对应服务落实。','原文 §3.3、§4；检查落点待确认'],
+ knowledge: ['企业知识能力','知识库 MCP','连接现有知识库、文档与向量数据库，提供制度检索和企业知识问答。','通常不直接连接业务数据库；知识访问范围沿用现有系统规则。','原文 §4.1；知识访问策略为整理补充'],
+ data: ['企业数据分析能力','问数 MCP','连接数据库、数仓或分析服务，承接自然语言查询、统计、分析与报表。','数据权限、组织范围和脱敏规则继续生效。','原文 §4.2'],
+ business: ['企业业务操作能力','业务 MCP','连接业务系统接口与服务，可查询状态、提交业务操作或发起审批。','继续执行操作权限、审批权限和业务规则；不能只按读写区分三类能力。','原文 §4.3']
+};
+document.querySelectorAll('[data-architecture]').forEach(button => button.addEventListener('click', () => {
+ document.querySelectorAll('[data-architecture]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+ const value = architecture[button.dataset.architecture];
+ ['architecture-label','architecture-detail-title','architecture-detail-description','architecture-detail-boundary','architecture-detail-source'].forEach((id,i) => document.getElementById(id).textContent = (i === 4 ? '依据：' : '') + value[i]);
+}));
+
+function tabGroup(selector, render, initial) {
+ const buttons = [...document.querySelectorAll(selector)];
+ function choose(button, focus = false) {
+  buttons.forEach(item => {
+   item.setAttribute('aria-selected', String(item === button));
+   item.tabIndex = item === button ? 0 : -1;
+  });
+  const panel = document.getElementById(button.getAttribute('aria-controls'));
+  panel.setAttribute('aria-labelledby', button.id);
+  render(button.dataset.identity || button.dataset.capability || button.dataset.phase);
+  if (focus) button.focus({preventScroll:true});
+ }
+ buttons.forEach((button,i) => {
+  button.addEventListener('click', () => choose(button));
+  button.addEventListener('keydown', event => {
+   if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key) || event.ctrlKey || event.metaKey || event.altKey) return;
+   event.preventDefault();
+   event.stopPropagation();
+   const target = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length-1 : (i + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+   choose(buttons[target], true);
+  });
+ });
+ choose(buttons.find(button => button.dataset.identity === initial || button.dataset.capability === initial || button.dataset.phase === initial) || buttons[0]);
+}
+const identityCases = {
+ valid: {
+  label:'原文身份映射示例 · 用户 10086',
+  context:{user_id:'10086',roles:['administrator'],permissions:['knowledge.use','data.query']},
+  states:['已认证','可信映射','发起调用','调用获准','业务校验','返回结果'],stop:-1,
+  title:'通过网关，再执行业务校验',description:'当前身份具备数据查询能力；业务服务仍按用户的数据范围与规则执行查询。'
+ },
+ denied: {
+  label:'示意变化 · 当前身份没有 data.query',
+  context:{user_id:'10086',roles:['administrator'],permissions:['knowledge.use']},
+  states:['已认证','已映射','请求查询','权限不足','未执行','不返回数据'],stop:3,
+  title:'在能力出口拦截本次查询',description:'身份已确认，但缺少数据查询工具权限。网关不发起下游业务调用；角色名称不能替代本次授权检查。'
+ },
+ untrusted: {
+  label:'示意变化 · 调用只传用户 ID',
+  context:{user_id:'10086'},
+  states:['已认证','已映射','调用凭据缺失','身份来源无法验证','未执行','不返回数据'],stop:3,
+  title:'用户字段不足以证明身份',description:'用户已通过企业认证并完成身份映射，但调用适配仅发送 user_id，未绑定可验证凭据。MCP 网关拒绝本次调用；入口认证不能代替出口校验。'
+ }
+};
+tabGroup('[data-identity]', key => {
+ const value = identityCases[key];
+ document.getElementById('identity-context-label').textContent = value.label;
+ document.getElementById('identity-context').textContent = JSON.stringify(value.context,null,2);
+ document.querySelectorAll('[data-identity-step]').forEach((row,i) => {
+  row.classList.toggle('blocked', i === value.stop);
+  row.classList.toggle('unreached', value.stop >= 0 && i > value.stop);
+  row.querySelector('em').textContent = value.states[i];
+ });
+ document.querySelector('.identity-result').classList.toggle('error', value.stop >= 0);
+ document.getElementById('identity-result-title').textContent = value.title;
+ document.getElementById('identity-result-description').textContent = value.description;
+}, 'valid');
+
+const capabilities = {
+ knowledge: {question:'“安全生产管理制度是什么？”',service:'知识库 MCP',system:'知识库系统 · 文档库 · 向量数据库',output:'检索相关文档，返回可引用的知识内容。',title:'知识访问范围',rules:['用户可访问的知识与文档范围','既有知识库的访问策略'],boundary:'通常不直接连接业务数据库；具体接法依据已有知识系统。'},
+ data: {question:'“本月库存是多少，变化原因是什么？”',service:'问数 MCP',system:'数据分析服务 · 业务数据库 · 数据仓库',output:'按已定义的指标与口径查询、统计和分析，返回业务结果。',title:'数据权限与脱敏规则',rules:['继承用户的数据权限','限定组织与数据范围','按既有规则执行脱敏'],boundary:'查询和分析仍需遵守业务口径、数据范围与权限，网关不替代分析服务的最终检查。'},
+ business: {question:'“查看当前审批状态，并发起业务审批。”',service:'业务 MCP',system:'业务系统接口 · 业务服务 · 既有业务数据',output:'查询业务状态、提交获准操作或发起流程审批。',title:'操作、审批与业务规则',rules:['检查具体操作权限','遵循既有审批权限','执行业务规则与状态校验'],boundary:'业务 MCP 可读也可写。写操作、确认、失败重试和重复操作的控制方式仍需明确。'}
+};
+tabGroup('[data-capability]', key => {
+ const value = capabilities[key];
+ [['capability-question','question'],['capability-service','service'],['capability-system','system'],['capability-output','output'],['capability-rules-title','title'],['capability-boundary','boundary']].forEach(([id,field]) => document.getElementById(id).textContent = value[field]);
+ document.getElementById('capability-rules').replaceChildren(...value.rules.map(text => {const li = document.createElement('li');li.textContent = text;return li;}));
+}, 'knowledge');
+
+const phases = {
+ connect: {label:'第一阶段 · 目标：验证企业能力可被调用',route:['AI Gateway','DSH Runtime','知识库／问数 MCP'],focusTitle:'重点验证接入链路',focus:'身份接入、插件加载、知识库调用和问数调用。',boundary:'第一阶段尚未增加 MCP Gateway；身份校验、工具授权和调用审计仍要有承载位置，具体分工待确认。'},
+ govern: {label:'第二阶段 · 目标：形成统一的企业能力出口',route:['AI Gateway','DSH Runtime','MCP Gateway','多个 MCP 服务'],focusTitle:'增加企业化治理',focus:'将工具权限、调用审计和安全策略集中到 MCP 网关，业务规则仍由对应系统承接。',boundary:'需要明确目标资源凭据、网关到下游的可信认证，以及网关策略与最终业务授权的分工。'},
+ platform: {label:'第三阶段 · 目标：支持多行业、多企业系统',route:['企业用户与 AI 网关','通用执行运行时','MCP Gateway','行业能力生态'],focusTitle:'面向行业能力复用',focus:'保持执行底座通用，扩展知识库、问数与业务能力，接入不同企业系统和行业场景。',boundary:'行业能力范围、企业边界、接入契约及平台化进入条件仍需明确；不表示已经形成完整平台。'}
+};
+tabGroup('[data-phase]', key => {
+ const value = phases[key],route = document.getElementById('phase-route'),items = [];
+ value.route.forEach((text,i) => {
+  if(i){const arrow = document.createElement('i');arrow.textContent = '→';arrow.setAttribute('aria-hidden','true');items.push(arrow);}
+  const node = document.createElement('span');node.textContent = text;if(text === 'MCP Gateway')node.className = 'new-layer';items.push(node);
+ });
+ route.replaceChildren(...items);
+ [['phase-label','label'],['phase-focus-title','focusTitle'],['phase-focus','focus'],['phase-boundary','boundary']].forEach(([id,field]) => document.getElementById(id).textContent = value[field]);
+}, 'connect');
+
+const header = document.querySelector('.topbar'),subnav = document.querySelector('.chapter-navigation');
+if(typeof ResizeObserver !== 'undefined')new ResizeObserver(() => {
+ document.documentElement.style.setProperty('--header-space',header.offsetHeight+'px');
+ document.documentElement.style.setProperty('--subnav-space',subnav.offsetHeight+'px');
+}).observe(header);
+if(typeof ResizeObserver !== 'undefined')new ResizeObserver(() => {
+ document.documentElement.style.setProperty('--subnav-space',subnav.offsetHeight+'px');
+}).observe(subnav);
+hashNavigation();
+window.addEventListener('load', () => requestAnimationFrame(() => {
+ if(!reading)window.scrollTo({top:0,behavior:'instant'});
+}), {once:true});
+})();
+
+(()=>{const menus=[...document.querySelectorAll('.study-switch')];document.addEventListener('pointerdown',e=>menus.forEach(menu=>{if(!menu.contains(e.target))menu.open=false;}));document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const menu=menus.find(x=>x.open);if(!menu)return;e.preventDefault();e.stopPropagation();menu.open=false;menu.querySelector('summary').focus();},true);})();
+</script></body></html>

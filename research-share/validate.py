@@ -1,4 +1,4 @@
-"""Validate the three-page offline research collection; UI checks are recorded separately."""
+"""Validate the four-page offline research collection; UI checks are recorded separately."""
 from html.parser import HTMLParser
 from collections import Counter
 from pathlib import Path
@@ -24,7 +24,7 @@ class Audit(HTMLParser):
         if tag == 'a' and 'research-card' in classes: self.cards += 1
 
 here = Path(__file__).resolve().parent
-names = ['index.html','agent-research.html','dsh-meeting.html']
+names = ['index.html','agent-research.html','dsh-meeting.html','enterprise-agent.html']
 audits = {}
 texts = {}
 for name in names:
@@ -34,8 +34,10 @@ for name in names:
 required = ['overview','reading'] + [f'q{i}' for i in range(1,11)] + ['cases','case-query','case-analysis','case-config','case-compare','takeaways','sources']
 assert audits['agent-research.html'].sections == required
 assert len(audits['dsh-meeting.html'].slides) == 8
-assert audits['index.html'].cards == 2
-placeholders = ['<!-- FOUNDATION_CONTENT -->','<!-- ECOLOGY_CONTENT -->','<!-- SELECTION_CONTENT -->','<!-- PRACTICE_CONTENT -->','<!-- ORIGINAL_RESEARCH -->','<!-- CASE_RESEARCH -->','<!-- STUDY_SWITCH -->','<!-- TAXONOMY_SLIDES -->','<!-- DSH_VALIDATION -->','<!-- PORTAL_STYLE -->','<!-- LEGACY_REDIRECT -->']
+enterprise_required = ['overview','architecture','responsibilities','identity','capabilities','alternatives','evolution','decisions']
+assert audits['enterprise-agent.html'].slides == enterprise_required
+assert audits['index.html'].cards == 3
+placeholders = ['<!-- FOUNDATION_CONTENT -->','<!-- ECOLOGY_CONTENT -->','<!-- SELECTION_CONTENT -->','<!-- PRACTICE_CONTENT -->','<!-- ORIGINAL_RESEARCH -->','<!-- CASE_RESEARCH -->','<!-- ORIGINAL_ENTERPRISE -->','<!-- STUDY_SWITCH -->','<!-- TAXONOMY_SLIDES -->','<!-- DSH_VALIDATION -->','<!-- PORTAL_STYLE -->','<!-- LEGACY_REDIRECT -->']
 result = {}
 for name, audit in audits.items():
     duplicates = [i for i,n in Counter(audit.ids).items() if n>1]
@@ -57,7 +59,8 @@ for name, audit in audits.items():
     result[name] = {'bytes':(here/'dist'/name).stat().st_size,'duplicate_ids':duplicates,'broken_anchors':broken,'broken_page_links':cross_broken,'external_runtime_assets':audit.assets,'unresolved_placeholders':unresolved}
 assert 'agent-research.html#overview' in audits['index.html'].links
 assert 'dsh-meeting.html#paper' in audits['index.html'].links
+assert 'enterprise-agent.html#overview' in audits['index.html'].links
 for name in names[1:]:
-    for href in ['index.html','agent-research.html#overview','dsh-meeting.html#paper']: assert href in audits[name].links
+    for href in ['index.html','agent-research.html#overview','dsh-meeting.html#paper','enterprise-agent.html#overview']: assert href in audits[name].links
 for id in required: assert json.dumps(id) in texts['index.html']
-print(json.dumps({'research_topics':19,'dsh_slides':8,'portal_cards':2,'pages':result},ensure_ascii=False,indent=2))
+print(json.dumps({'research_topics':19,'dsh_slides':8,'enterprise_slides':8,'portal_cards':3,'pages':result},ensure_ascii=False,indent=2))
